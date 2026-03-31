@@ -2,3 +2,5 @@ https://www.math.uwaterloo.ca/tsp/data/art/
 https://www.researchgate.net/publication/270684562_A_Survey_Paper_On_Solving_TSP_using_Ant_Colony_Optimization_on_GPU
 https://www.sciencedirect.com/science/article/pii/S1568494622001302?via%3Dihub#b46
 https://pubmed.ncbi.nlm.nih.gov/35801461/
+https://dl.acm.org/doi/10.1145/1389095.1389120
+https://dl.acm.org/doi/10.1145/1569901.1570170

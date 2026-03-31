@@ -5,8 +5,8 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-random.seed(42)
-np.random.seed(42)
+random.seed(57)
+np.random.seed(57)
 
 
 def generate_euclidean_distances(n_cities, seed=42, scale=100):
@@ -29,6 +29,25 @@ def calculate_distance(path, distances):
     return total
 
 
+#def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # sabit
+#    return 0.5
+
+def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation):  # Lineer azalma / best
+    progress = iteration / (n_iterations - 1)
+    evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
+    return evaporation
+
+#def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Üssel azalma
+#    progress = np.log1p(iteration) / np.log1p(n_iterations - 1)
+#    evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
+#    return evaporation
+
+#def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Logaritmik azalma
+#    ratio = iteration / (n_iterations - 1)
+#    evaporation = start_evaporation * ((end_evaporation / start_evaporation) ** ratio)
+#    return evaporation
+
+
 def run_aco(
     distances,
     n_ants=20,
@@ -36,7 +55,8 @@ def run_aco(
     alpha=1,
     beta=3,
     evaporation=0.5,
-    q=100
+    q=100,
+    end_evaporation=0.1
 ):
     n_cities = len(distances)
     pheromone = np.ones((n_cities, n_cities), dtype=float)
@@ -44,10 +64,19 @@ def run_aco(
     global_best_distance = float("inf")
     global_best_path = None
     best_per_iteration = []
+    evaporation_history = []
 
     for iteration in range(n_iterations):
         all_paths = []
         all_distances = []
+
+        current_evaporation = get_evaporation_rate(
+            iteration=iteration,
+            n_iterations=n_iterations,
+            start_evaporation=evaporation,
+            end_evaporation=end_evaporation
+        )
+        evaporation_history.append(current_evaporation)
 
         for ant in range(n_ants):
             start_city = random.randint(0, n_cities - 1)
@@ -86,7 +115,7 @@ def run_aco(
 
         best_per_iteration.append(min(all_distances))
 
-        pheromone *= (1 - evaporation)
+        pheromone *= (1 - current_evaporation)
 
         for path, dist in zip(all_paths, all_distances):
             deposit = q / dist
@@ -102,7 +131,7 @@ def run_aco(
             pheromone[a][b] += deposit
             pheromone[b][a] += deposit
 
-    return global_best_path, global_best_distance, pheromone, best_per_iteration
+    return global_best_path, global_best_distance, pheromone, best_per_iteration, evaporation_history
 
 
 def plot_cities(coords):
@@ -165,17 +194,28 @@ def plot_convergence(best_per_iteration):
     plt.show()
 
 
-n_cities = 200
+def plot_evaporation(evaporation_history):
+    plt.figure(figsize=(8, 6))
+    plt.plot(evaporation_history, marker="o")
+    plt.title("Evaporation Rate per Iteration")
+    plt.xlabel("Iteration")
+    plt.ylabel("Evaporation Rate")
+    plt.grid(True)
+    plt.show()
+
+
+n_cities = 100
 distances, coords = generate_euclidean_distances(n_cities=n_cities, seed=42, scale=n_cities * 20)
 
-best_path, best_distance, pheromone, best_per_iteration = run_aco(
+best_path, best_distance, pheromone, best_per_iteration, evaporation_history = run_aco(
     distances=distances,
-    n_ants=20,
+    n_ants=30,
     n_iterations=200,
     alpha=1,
-    beta=2,
-    evaporation=0.5,
-    q=100
+    beta=3,
+    evaporation=0.8,
+    q=100,
+    end_evaporation=0.3
 )
 
 print("Best Path:", best_path)
@@ -185,3 +225,4 @@ plot_cities(coords)
 plot_best_tour(coords, best_path)
 #plot_pheromone_heatmap(pheromone)
 plot_convergence(best_per_iteration)
+plot_evaporation(evaporation_history)
