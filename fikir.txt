@@ -1,0 +1,27 @@
+Original:
+    feremon olsun distance olsun hepsi bir tam tur tamamlasın iyi pathe iyi feremon koyun ve tekrarlayın
+Yalandan:
+    Tour olmasın hepsi sadece 1 tane noktadan çıksın ve o anki feremonlara bakarak bir noktaya gitsin başladığı noktaya
+    dönsün her zaman sonra tekrar çıksın. Random bir süre çalıştırılıcak ve sonuçlara bakıcak.Sonra tur atmaya başlasınlar
+        Ek: Her nokta diğer noktaya kendisinden kaç nokta uzaklığında olduğuna göre feramon eklesin
+
+    Yine tur atmaya başlamadan önce feremonları biz bazı yerlerde biraz arttıralım belirli işlemler yaparak
+    bazı edgelerin diğerlerinden daha likely olduğunu anlayabiliriz ve bu noktalara başlangıçta feremon koyarız
+    nasıl anlıcaz sorusu da ilk yalandan kısmında yöntem de aynısı zaten ama bir diğer anlama yöntemi Random
+    direkt random uzunluklarda kesitler alırız ve bunlardan en iyi olanları direkt seçeriz ama büyük bir
+    eveporation koyarız bu sayede bunlardan aldıklarımızıı aldıktan sonra kalan hayatımıza devam ederiz.
+
+    Aslında Simulated anneling gibi evopartion başta fazla sonlara doğru azalıyor
+    
+    Hiçbir update yapmıyorum edgelere tur bitene kadar. Tur bitince edgelerin uzunluklarından bağımsız sadece turun kalitesine göre update yapıyorum
+    
+    
+    Warm-start;
+    Update-onlyif-Tur-quality;
+    Bias(some edges are more likely);
+    Cooling;
+        log
+        linear
+    Old-Young Ants
+        uniform
+        random

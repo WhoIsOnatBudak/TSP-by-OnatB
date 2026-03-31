@@ -1,0 +1,9 @@
+venv/
+env/
+ENV/
+bin/
+lib/
+include/
+
+# VS Code özel ayarları
+.vscode/
