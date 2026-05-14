@@ -3,6 +3,7 @@ import random
 import numpy as np
 
 from opt import two_opt_cross_check
+from pheromone import create_initial_pheromone
 
 
 def calculate_distance(path, distances):
@@ -43,10 +44,16 @@ def run_aco(
     evaporation=0.5,
     q=100,
     end_evaporation=0.1,
-    cross_check=True
+    cross_check=True,
+    base_pheromone=1.0,
+    nearest_neighbor_pheromone=1.1
 ):
     n_cities = len(distances)
-    pheromone = np.ones((n_cities, n_cities), dtype=float)
+    pheromone = create_initial_pheromone(
+        distances=distances,
+        base_pheromone=base_pheromone,
+        nearest_neighbor_pheromone=nearest_neighbor_pheromone
+    )
 
     global_best_distance = float("inf")
     global_best_path = None

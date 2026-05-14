@@ -28,7 +28,7 @@ def main():
     random.seed(43)
     np.random.seed(43)
 
-    n_cities = 40
+    n_cities = 100
     distances, coords = generate_euclidean_distances(
         n_cities=n_cities,
         seed=43,
@@ -44,7 +44,9 @@ def main():
         beta=3,
         evaporation=0.8,
         q=n_cities * 20,
-        end_evaporation=0.3
+        end_evaporation=0.3,
+        base_pheromone=1.0,
+        nearest_neighbor_pheromone=1.1
     )
 
     print("Best Path:", best_path)
