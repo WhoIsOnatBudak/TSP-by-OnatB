@@ -56,13 +56,116 @@ def plot_pheromone_heatmap(pheromone):
     plt.show()
 
 
-def plot_convergence(best_per_iteration):
+def plot_convergence(best_per_iteration, blind_round_history=None):
     plt.figure(figsize=(8, 6))
-    plt.plot(best_per_iteration, marker="o")
+    grouped_blind_rounds = {}
+
+    if blind_round_history:
+        for blind_round in blind_round_history:
+            grouped_blind_rounds.setdefault(
+                blind_round["aco_iteration"],
+                []
+            ).append(blind_round)
+
+    events = []
+
+    for iteration, best_distance in enumerate(best_per_iteration):
+        events.append({
+            "type": "aco",
+            "iteration": iteration,
+            "best_distance": best_distance
+        })
+
+        blind_rounds = sorted(
+            grouped_blind_rounds.get(iteration, []),
+            key=lambda blind_round: blind_round["blind_iteration"]
+        )
+
+        for blind_round in blind_rounds:
+            events.append({
+                "type": "blind",
+                "iteration": iteration,
+                "blind_iteration": blind_round["blind_iteration"],
+                "best_distance": blind_round["best_distance"]
+            })
+
+    for event_index in range(1, len(events)):
+        previous_event = events[event_index - 1]
+        current_event = events[event_index]
+        is_blind_segment = current_event["type"] == "blind"
+
+        plt.plot(
+            [event_index, event_index + 1],
+            [
+                previous_event["best_distance"],
+                current_event["best_distance"]
+            ],
+            color="tab:orange" if is_blind_segment else "tab:blue",
+            linestyle="--" if is_blind_segment else "-",
+            linewidth=2,
+            alpha=0.9
+        )
+
+    aco_x_values = [
+        event_index
+        for event_index, event in enumerate(events, start=1)
+        if event["type"] == "aco"
+    ]
+    aco_y_values = [
+        event["best_distance"]
+        for event in events
+        if event["type"] == "aco"
+    ]
+    blind_x_values = [
+        event_index
+        for event_index, event in enumerate(events, start=1)
+        if event["type"] == "blind"
+    ]
+    blind_y_values = [
+        event["best_distance"]
+        for event in events
+        if event["type"] == "blind"
+    ]
+
+    plt.scatter(
+        aco_x_values,
+        aco_y_values,
+        marker="o",
+        color="tab:blue",
+        label="ACO Iterations",
+        zorder=3
+    )
+
+    if blind_x_values:
+        plt.scatter(
+            blind_x_values,
+            blind_y_values,
+            marker="s",
+            color="tab:orange",
+            edgecolors="tab:red",
+            label="Blind ACO Rounds",
+            zorder=4
+        )
+
+    aco_tick_labels = [
+        event["iteration"] + 1
+        for event in events
+        if event["type"] == "aco"
+    ]
+
+    if len(aco_x_values) <= 40:
+        plt.xticks(
+            aco_x_values,
+            aco_tick_labels,
+            rotation=45 if len(aco_x_values) > 20 else 0
+        )
+
     plt.title("Best Distance per Iteration")
-    plt.xlabel("Iteration")
+    plt.xlabel("ACO Iteration (Blind Rounds Inserted)")
     plt.ylabel("Best Distance")
+    plt.legend()
     plt.grid(True)
+    plt.tight_layout()
     plt.show()
 
 

@@ -28,17 +28,24 @@ def main():
     random.seed(43)
     np.random.seed(43)
 
-    n_cities = 40
+    n_cities = 30
     distances, coords = generate_euclidean_distances(
         n_cities=n_cities,
-        seed=43,
+        seed=47,
         scale=n_cities * 20
     )
 
-    best_path, best_distance, pheromone, best_per_iteration, evaporation_history = run_aco(
+    (
+        best_path,
+        best_distance,
+        pheromone,
+        best_per_iteration,
+        evaporation_history,
+        blind_round_history
+    ) = run_aco(
         distances=distances,
         coords=coords,
-        n_ants=20,
+        n_ants=40,
         n_iterations=30,
         alpha=1,
         beta=3,
@@ -49,7 +56,8 @@ def main():
         nearest_neighbor_pheromone=1.1,
         blind_stagnation_limit=10,
         blind_iterations=5,
-        blind_blend_weight=0.3
+        blind_blend_weight=0.5,
+        return_blind_history=True
     )
 
     print("Best Path:", best_path)
@@ -57,8 +65,8 @@ def main():
 
     plot_cities(coords)
     plot_best_tour(coords, best_path)
-    #plot_pheromone_heatmap(pheromone)
-    plot_convergence(best_per_iteration)
+    plot_pheromone_heatmap(pheromone)
+    plot_convergence(best_per_iteration, blind_round_history)
     plot_evaporation(evaporation_history)
 
 

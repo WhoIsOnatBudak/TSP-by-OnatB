@@ -18,16 +18,16 @@ def calculate_distance(path, distances):
 # def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # sabit
 #     return 0.5
 
-def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation):  # Lineer azalma / best
-    progress = iteration / (n_iterations - 1)
-    evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
-    return evaporation
+#def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation):  # Lineer azalma / best
+#    progress = iteration / (n_iterations - 1)
+#    evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
+#    return evaporation
 
 
-# def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Ussel azalma
-#     progress = np.log1p(iteration) / np.log1p(n_iterations - 1)
-#     evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
-#     return evaporation
+def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Ussel azalma
+     progress = np.log1p(iteration) / np.log1p(n_iterations - 1)
+     evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
+     return evaporation
 
 # def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Logaritmik azalma
 #     ratio = iteration / (n_iterations - 1)
@@ -50,7 +50,8 @@ def run_aco(
     nearest_neighbor_pheromone=1.1,
     blind_stagnation_limit=10,
     blind_iterations=5,
-    blind_blend_weight=0.3
+    blind_blend_weight=0.3,
+    return_blind_history=False
 ):
     n_cities = len(distances)
     pheromone = create_initial_pheromone(
@@ -63,6 +64,7 @@ def run_aco(
     global_best_path = None
     best_per_iteration = []
     evaporation_history = []
+    blind_round_history = []
     stagnation_counter = 0
 
     for iteration in range(n_iterations):
@@ -146,7 +148,7 @@ def run_aco(
             and blind_iterations > 0
             and blind_blend_weight > 0
         ):
-            blind_pheromone = run_blind_aco(
+            blind_pheromone, blind_best_per_iteration = run_blind_aco(
                 distances=distances,
                 coords=coords,
                 n_ants=n_ants,
@@ -155,8 +157,17 @@ def run_aco(
                 evaporation=current_evaporation,
                 q=q,
                 base_pheromone=base_pheromone,
-                cross_check=cross_check
+                cross_check=cross_check,
+                return_history=True
             )
+            for blind_iteration, best_distance in enumerate(blind_best_per_iteration):
+                blind_round_history.append({
+                    "aco_iteration": iteration,
+                    "blind_iteration": blind_iteration,
+                    "blind_total_iterations": blind_iterations,
+                    "best_distance": best_distance
+                })
+
             pheromone = blend_pheromones(
                 current_pheromone=pheromone,
                 blind_pheromone=blind_pheromone,
@@ -164,4 +175,15 @@ def run_aco(
             )
             stagnation_counter = 0
 
-    return global_best_path, global_best_distance, pheromone, best_per_iteration, evaporation_history
+    result = (
+        global_best_path,
+        global_best_distance,
+        pheromone,
+        best_per_iteration,
+        evaporation_history
+    )
+
+    if return_blind_history:
+        return result + (blind_round_history,)
+
+    return result

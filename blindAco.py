@@ -67,13 +67,15 @@ def run_blind_aco(
     evaporation=0.5,
     q=100,
     base_pheromone=1.0,
-    cross_check=True
+    cross_check=True,
+    return_history=False
 ):
     pheromone = create_initial_pheromone(
         distances=distances,
         base_pheromone=base_pheromone,
         nearest_neighbor_pheromone=None
     )
+    best_per_iteration = []
 
     for _ in range(n_iterations):
         all_paths = []
@@ -89,10 +91,15 @@ def run_blind_aco(
             all_paths.append(path)
             all_distances.append(distance)
 
+        best_per_iteration.append(min(all_distances))
+
         pheromone *= (1 - evaporation)
 
         for path, distance in zip(all_paths, all_distances):
             _deposit_pheromone(pheromone, path, distance, q)
+
+    if return_history:
+        return pheromone, best_per_iteration
 
     return pheromone
 
