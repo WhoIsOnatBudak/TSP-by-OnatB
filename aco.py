@@ -2,6 +2,7 @@ import random
 
 import numpy as np
 
+from blindAco import blend_pheromones, run_blind_aco
 from opt import two_opt_cross_check
 from pheromone import create_initial_pheromone
 
@@ -46,7 +47,10 @@ def run_aco(
     end_evaporation=0.1,
     cross_check=True,
     base_pheromone=1.0,
-    nearest_neighbor_pheromone=1.1
+    nearest_neighbor_pheromone=1.1,
+    blind_stagnation_limit=10,
+    blind_iterations=5,
+    blind_blend_weight=0.3
 ):
     n_cities = len(distances)
     pheromone = create_initial_pheromone(
@@ -59,10 +63,12 @@ def run_aco(
     global_best_path = None
     best_per_iteration = []
     evaporation_history = []
+    stagnation_counter = 0
 
     for iteration in range(n_iterations):
         all_paths = []
         all_distances = []
+        improved_this_iteration = False
 
         current_evaporation = get_evaporation_rate(
             iteration=iteration,
@@ -109,6 +115,7 @@ def run_aco(
             if dist < global_best_distance:
                 global_best_distance = dist
                 global_best_path = visited[:]
+                improved_this_iteration = True
 
         best_per_iteration.append(min(all_distances))
 
@@ -127,5 +134,34 @@ def run_aco(
             b = path[0]
             pheromone[a][b] += deposit
             pheromone[b][a] += deposit
+
+        if improved_this_iteration:
+            stagnation_counter = 0
+        else:
+            stagnation_counter += 1
+
+        if (
+            blind_stagnation_limit is not None
+            and stagnation_counter >= blind_stagnation_limit
+            and blind_iterations > 0
+            and blind_blend_weight > 0
+        ):
+            blind_pheromone = run_blind_aco(
+                distances=distances,
+                coords=coords,
+                n_ants=n_ants,
+                n_iterations=blind_iterations,
+                beta=beta,
+                evaporation=current_evaporation,
+                q=q,
+                base_pheromone=base_pheromone,
+                cross_check=cross_check
+            )
+            pheromone = blend_pheromones(
+                current_pheromone=pheromone,
+                blind_pheromone=blind_pheromone,
+                blind_weight=blind_blend_weight
+            )
+            stagnation_counter = 0
 
     return global_best_path, global_best_distance, pheromone, best_per_iteration, evaporation_history
