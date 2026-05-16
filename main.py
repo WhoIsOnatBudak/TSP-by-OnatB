@@ -28,7 +28,7 @@ def main():
     random.seed(43)
     np.random.seed(43)
 
-    n_cities = 30
+    n_cities = 100
     distances, coords = generate_euclidean_distances(
         n_cities=n_cities,
         seed=47,
@@ -46,7 +46,7 @@ def main():
         distances=distances,
         coords=coords,
         n_ants=40,
-        n_iterations=30,
+        n_iterations=50,
         alpha=1,
         beta=3,
         evaporation=0.8,
@@ -65,7 +65,7 @@ def main():
 
     plot_cities(coords)
     plot_best_tour(coords, best_path)
-    plot_pheromone_heatmap(pheromone)
+    #plot_pheromone_heatmap(pheromone)
     plot_convergence(best_per_iteration, blind_round_history)
     plot_evaporation(evaporation_history)
 

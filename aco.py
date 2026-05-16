@@ -18,16 +18,16 @@ def calculate_distance(path, distances):
 # def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # sabit
 #     return 0.5
 
-#def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation):  # Lineer azalma / best
-#    progress = iteration / (n_iterations - 1)
-#    evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
-#    return evaporation
+def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation):  # Lineer azalma / best
+    progress = iteration / (n_iterations - 1)
+    evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
+    return evaporation
 
 
-def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Ussel azalma
-     progress = np.log1p(iteration) / np.log1p(n_iterations - 1)
-     evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
-     return evaporation
+#def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Ussel azalma
+#     progress = np.log1p(iteration) / np.log1p(n_iterations - 1)
+#     evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
+#     return evaporation
 
 # def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Logaritmik azalma
 #     ratio = iteration / (n_iterations - 1)
