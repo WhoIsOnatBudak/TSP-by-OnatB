@@ -8,7 +8,7 @@
 int main() {
     RandomContext rng(43, 43);
 
-    const int n_cities = 101;
+    const int n_cities = 100;
     DistanceData data = generateEuclideanDistances(
         n_cities,
         47,
@@ -26,7 +26,7 @@ int main() {
     params.end_evaporation = 0.3;
     params.base_pheromone = 1.0;
     params.nearest_neighbor_pheromone = 1.1;
-    params.blind_stagnation_limit = 10;
+    params.blind_stagnation_limit = 20;
     params.blind_iterations = 5;
     params.blind_blend_weight = 0.5;
 

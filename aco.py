@@ -15,6 +15,15 @@ def calculate_distance(path, distances):
     return total
 
 
+def vary_parameter(value, variation):
+    if variation <= 0:
+        return value
+
+    lower_multiplier = max(0.0, 1 - variation)
+    upper_multiplier = 1 + variation
+    return value * random.uniform(lower_multiplier, upper_multiplier)
+
+
 # def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # sabit
 #     return 0.5
 
@@ -51,6 +60,7 @@ def run_aco(
     blind_stagnation_limit=10,
     blind_iterations=5,
     blind_blend_weight=0.3,
+    ant_parameter_variation=0.1,
     return_blind_history=False
 ):
     n_cities = len(distances)
@@ -81,6 +91,8 @@ def run_aco(
         evaporation_history.append(current_evaporation)
 
         for _ in range(n_ants):
+            ant_alpha = vary_parameter(alpha, ant_parameter_variation)
+            ant_beta = vary_parameter(beta, ant_parameter_variation)
             start_city = random.randint(0, n_cities - 1)
             visited = [start_city]
             visited_set = {start_city}
@@ -91,8 +103,8 @@ def run_aco(
 
                 for city in range(n_cities):
                     if city not in visited_set:
-                        tau = pheromone[current][city] ** alpha
-                        eta = (1.0 / distances[current][city]) ** beta
+                        tau = pheromone[current][city] ** ant_alpha
+                        eta = (1.0 / distances[current][city]) ** ant_beta
                         probabilities[city] = tau * eta
 
                 total_probability = probabilities.sum()
@@ -158,6 +170,7 @@ def run_aco(
                 q=q,
                 base_pheromone=base_pheromone,
                 cross_check=cross_check,
+                beta_variation=ant_parameter_variation,
                 return_history=True
             )
             for blind_iteration, best_distance in enumerate(blind_best_per_iteration):

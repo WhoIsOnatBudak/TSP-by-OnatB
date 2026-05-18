@@ -29,6 +29,15 @@ def _deposit_pheromone(pheromone, path, distance, q):
     pheromone[b][a] += deposit
 
 
+def _vary_parameter(value, variation):
+    if variation <= 0:
+        return value
+
+    lower_multiplier = max(0.0, 1 - variation)
+    upper_multiplier = 1 + variation
+    return value * random.uniform(lower_multiplier, upper_multiplier)
+
+
 def _build_distance_only_path(distances, beta):
     n_cities = len(distances)
     start_city = random.randint(0, n_cities - 1)
@@ -68,6 +77,7 @@ def run_blind_aco(
     q=100,
     base_pheromone=1.0,
     cross_check=True,
+    beta_variation=0.1,
     return_history=False
 ):
     pheromone = create_initial_pheromone(
@@ -82,7 +92,8 @@ def run_blind_aco(
         all_distances = []
 
         for _ in range(n_ants):
-            path = _build_distance_only_path(distances, beta)
+            ant_beta = _vary_parameter(beta, beta_variation)
+            path = _build_distance_only_path(distances, ant_beta)
 
             if cross_check and coords is not None:
                 path = two_opt_cross_check(path, coords)

@@ -57,6 +57,7 @@ def main():
         blind_stagnation_limit=10,
         blind_iterations=5,
         blind_blend_weight=0.5,
+        ant_parameter_variation=0.1,
         return_blind_history=True
     )
 
