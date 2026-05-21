@@ -8,7 +8,7 @@
 int main() {
     RandomContext rng(43, 43);
 
-    const int n_cities = 100;
+    const int n_cities = 30;
     DistanceData data = generateEuclideanDistances(
         n_cities,
         47,
@@ -26,9 +26,13 @@ int main() {
     params.end_evaporation = 0.3;
     params.base_pheromone = 1.0;
     params.nearest_neighbor_pheromone = 1.1;
-    params.blind_stagnation_limit = 20;
+    params.blind_stagnation_limit = 10;
     params.blind_iterations = 5;
     params.blind_blend_weight = 0.5;
+    params.ant_parameter_variation = 0.1;
+    params.use_min_max_pheromone = true;
+    params.min_max_tau_ratio = 2.0;
+    params.pheromone_deposit_top_ants = 4;
 
     AcoResult result = runAco(
         data.distances,

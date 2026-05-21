@@ -1,6 +1,15 @@
 # TestC++
 
-C++17 port of the Python TSP ACO project.
+C++17 port of the current Python TSP ACO project.
+
+This version includes the current BlindBlend behavior:
+
+- linearly changing evaporation
+- per-ant alpha/beta variation
+- nearest-neighbor initial pheromone boost
+- min-max pheromone clamp
+- pheromone deposit from only the best `pheromone_deposit_top_ants`
+- blind ACO pheromone built from total edge usage counts after all blind rounds
 
 Build:
 

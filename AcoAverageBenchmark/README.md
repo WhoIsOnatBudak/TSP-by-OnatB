@@ -3,6 +3,15 @@
 This is a separate benchmark version. It keeps `AcoVariants/` untouched and
 runs all algorithms over a city-count range.
 
+`BlindBlendAS` includes the current project additions:
+
+- linearly changing evaporation
+- per-ant alpha/beta variation
+- nearest-neighbor initial pheromone boost
+- min-max pheromone clamp in the normal ACO update and the blind ACO update
+- normal ACO pheromone deposit from only the best `pheromone_deposit_top_ants`
+- blind ACO pheromone built from total edge usage counts after all blind iterations
+
 Usage:
 
 ```sh

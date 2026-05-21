@@ -4,7 +4,11 @@ import numpy as np
 
 from blindAco import blend_pheromones, run_blind_aco
 from opt import two_opt_cross_check
-from pheromone import create_initial_pheromone
+from pheromone import (
+    apply_min_max_pheromone,
+    calculate_min_max_pheromone_bounds,
+    create_initial_pheromone,
+)
 
 
 def calculate_distance(path, distances):
@@ -22,6 +26,25 @@ def vary_parameter(value, variation):
     lower_multiplier = max(0.0, 1 - variation)
     upper_multiplier = 1 + variation
     return value * random.uniform(lower_multiplier, upper_multiplier)
+
+
+def select_pheromone_deposit_paths(all_paths, all_distances, deposit_top_ants):
+    if deposit_top_ants is None:
+        return zip(all_paths, all_distances)
+
+    deposit_count = max(0, min(int(deposit_top_ants), len(all_paths)))
+
+    if deposit_count == 0:
+        return []
+
+    selected_indices = sorted(
+        range(len(all_distances)),
+        key=lambda index: all_distances[index]
+    )[:deposit_count]
+    return [
+        (all_paths[index], all_distances[index])
+        for index in selected_indices
+    ]
 
 
 # def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # sabit
@@ -61,6 +84,9 @@ def run_aco(
     blind_iterations=5,
     blind_blend_weight=0.3,
     ant_parameter_variation=0.1,
+    use_min_max_pheromone=False,
+    min_max_tau_ratio=2.0,
+    pheromone_deposit_top_ants=None,
     return_blind_history=False
 ):
     n_cities = len(distances)
@@ -135,7 +161,11 @@ def run_aco(
 
         pheromone *= (1 - current_evaporation)
 
-        for path, dist in zip(all_paths, all_distances):
+        for path, dist in select_pheromone_deposit_paths(
+            all_paths=all_paths,
+            all_distances=all_distances,
+            deposit_top_ants=pheromone_deposit_top_ants
+        ):
             deposit = q / dist
 
             for i in range(len(path) - 1):
@@ -149,6 +179,15 @@ def run_aco(
             pheromone[a][b] += deposit
             pheromone[b][a] += deposit
 
+        if use_min_max_pheromone:
+            apply_min_max_pheromone(
+                pheromone=pheromone,
+                q=q,
+                evaporation=current_evaporation,
+                best_distance=global_best_distance,
+                tau_ratio=min_max_tau_ratio
+            )
+
         if improved_this_iteration:
             stagnation_counter = 0
         else:
@@ -160,6 +199,17 @@ def run_aco(
             and blind_iterations > 0
             and blind_blend_weight > 0
         ):
+            blind_pheromone_bounds = None
+
+            if use_min_max_pheromone:
+                blind_pheromone_bounds = calculate_min_max_pheromone_bounds(
+                    q=q,
+                    evaporation=current_evaporation,
+                    best_distance=global_best_distance,
+                    n_cities=n_cities,
+                    tau_ratio=min_max_tau_ratio
+                )
+
             blind_pheromone, blind_best_per_iteration = run_blind_aco(
                 distances=distances,
                 coords=coords,
@@ -171,6 +221,9 @@ def run_aco(
                 base_pheromone=base_pheromone,
                 cross_check=cross_check,
                 beta_variation=ant_parameter_variation,
+                use_min_max_pheromone=use_min_max_pheromone,
+                min_max_tau_ratio=min_max_tau_ratio,
+                pheromone_bounds=blind_pheromone_bounds,
                 return_history=True
             )
             for blind_iteration, best_distance in enumerate(blind_best_per_iteration):
@@ -184,8 +237,17 @@ def run_aco(
             pheromone = blend_pheromones(
                 current_pheromone=pheromone,
                 blind_pheromone=blind_pheromone,
-                blind_weight=blind_blend_weight
+                blind_weight=blind_blend_weight,
+                normalize_blind=blind_pheromone_bounds is None
             )
+            if use_min_max_pheromone:
+                apply_min_max_pheromone(
+                    pheromone=pheromone,
+                    q=q,
+                    evaporation=current_evaporation,
+                    best_distance=global_best_distance,
+                    tau_ratio=min_max_tau_ratio
+                )
             stagnation_counter = 0
 
     result = (

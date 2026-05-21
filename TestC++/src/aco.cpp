@@ -9,9 +9,30 @@
 #include <cmath>
 #include <cstddef>
 #include <numeric>
+#include <optional>
 #include <random>
+#include <utility>
 
 namespace {
+
+double varyParameter(
+    double value,
+    double variation,
+    RandomContext& rng
+) {
+    if (variation <= 0.0) {
+        return value;
+    }
+
+    const double lower_multiplier = std::max(0.0, 1.0 - variation);
+    const double upper_multiplier = 1.0 + variation;
+    std::uniform_real_distribution<double> distribution(
+        lower_multiplier,
+        upper_multiplier
+    );
+
+    return value * distribution(rng.python_rng);
+}
 
 int chooseByWeights(
     const std::vector<double>& weights,
@@ -45,6 +66,37 @@ std::vector<int> chooseCandidate(
     }
 
     return candidates;
+}
+
+std::vector<std::size_t> selectPheromoneDepositIndices(
+    const std::vector<double>& all_distances,
+    std::optional<int> deposit_top_ants
+) {
+    std::vector<std::size_t> indices(all_distances.size());
+    std::iota(indices.begin(), indices.end(), 0);
+
+    if (!deposit_top_ants.has_value()) {
+        return indices;
+    }
+
+    const std::size_t deposit_count = std::min(
+        static_cast<std::size_t>(std::max(*deposit_top_ants, 0)),
+        all_distances.size()
+    );
+
+    if (deposit_count == 0) {
+        return {};
+    }
+
+    std::sort(
+        indices.begin(),
+        indices.end(),
+        [&](std::size_t left, std::size_t right) {
+            return all_distances[left] < all_distances[right];
+        }
+    );
+    indices.resize(deposit_count);
+    return indices;
 }
 
 } // namespace
@@ -97,6 +149,16 @@ AcoResult runAco(
         result.evaporation_history.push_back(current_evaporation);
 
         for (int ant = 0; ant < params.n_ants; ++ant) {
+            const double ant_alpha = varyParameter(
+                params.alpha,
+                params.ant_parameter_variation,
+                rng
+            );
+            const double ant_beta = varyParameter(
+                params.beta,
+                params.ant_parameter_variation,
+                rng
+            );
             std::uniform_int_distribution<int> start_distribution(
                 0,
                 n_cities - 1
@@ -121,12 +183,12 @@ AcoResult runAco(
                         const double tau = std::pow(
                             pheromone[static_cast<std::size_t>(current)]
                                 [static_cast<std::size_t>(city)],
-                            params.alpha
+                            ant_alpha
                         );
                         const double eta = std::pow(
                             1.0 / distances[static_cast<std::size_t>(current)]
                                 [static_cast<std::size_t>(city)],
-                            params.beta
+                            ant_beta
                         );
                         probabilities[static_cast<std::size_t>(city)] =
                             tau * eta;
@@ -190,12 +252,29 @@ AcoResult runAco(
             }
         }
 
-        for (std::size_t index = 0; index < all_paths.size(); ++index) {
+        const std::vector<std::size_t> deposit_indices =
+            selectPheromoneDepositIndices(
+                all_distances,
+                params.pheromone_deposit_top_ants
+            );
+
+        for (std::size_t index : deposit_indices) {
             depositPheromone(
                 pheromone,
                 all_paths[index],
                 all_distances[index],
                 params.q
+            );
+        }
+
+        if (params.use_min_max_pheromone) {
+            applyMinMaxPheromone(
+                pheromone,
+                params.q,
+                current_evaporation,
+                result.best_distance,
+                n_cities,
+                params.min_max_tau_ratio
             );
         }
 
@@ -211,6 +290,25 @@ AcoResult runAco(
             && params.blind_iterations > 0
             && params.blind_blend_weight > 0.0
         ) {
+            std::optional<std::pair<double, double>> blind_pheromone_bounds;
+
+            if (params.use_min_max_pheromone) {
+                double tau_min = 0.0;
+                double tau_max = 0.0;
+
+                if (calculateMinMaxPheromoneBounds(
+                    params.q,
+                    current_evaporation,
+                    result.best_distance,
+                    n_cities,
+                    params.min_max_tau_ratio,
+                    tau_min,
+                    tau_max
+                )) {
+                    blind_pheromone_bounds = std::make_pair(tau_min, tau_max);
+                }
+            }
+
             BlindAcoResult blind_result = runBlindAco(
                 distances,
                 coords,
@@ -221,6 +319,10 @@ AcoResult runAco(
                 params.q,
                 params.base_pheromone,
                 params.cross_check,
+                params.ant_parameter_variation,
+                params.use_min_max_pheromone,
+                params.min_max_tau_ratio,
+                blind_pheromone_bounds,
                 rng
             );
 
@@ -240,8 +342,21 @@ AcoResult runAco(
             pheromone = blendPheromones(
                 pheromone,
                 blind_result.pheromone,
-                params.blind_blend_weight
+                params.blind_blend_weight,
+                !blind_pheromone_bounds.has_value()
             );
+
+            if (params.use_min_max_pheromone) {
+                applyMinMaxPheromone(
+                    pheromone,
+                    params.q,
+                    current_evaporation,
+                    result.best_distance,
+                    n_cities,
+                    params.min_max_tau_ratio
+                );
+            }
+
             stagnation_counter = 0;
         }
     }

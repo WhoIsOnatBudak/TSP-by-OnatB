@@ -1,7 +1,16 @@
 #include "pheromone.hpp"
 
+#include <algorithm>
 #include <cstddef>
+#include <cmath>
 #include <limits>
+
+Matrix createFlatPheromone(
+    std::size_t n_cities,
+    double base_pheromone
+) {
+    return Matrix(n_cities, std::vector<double>(n_cities, base_pheromone));
+}
 
 Matrix createInitialPheromone(
     const Matrix& distances,
@@ -9,7 +18,7 @@ Matrix createInitialPheromone(
     std::optional<double> nearest_neighbor_pheromone
 ) {
     const std::size_t n_cities = distances.size();
-    Matrix pheromone(n_cities, std::vector<double>(n_cities, base_pheromone));
+    Matrix pheromone = createFlatPheromone(n_cities, base_pheromone);
 
     if (n_cities < 2 || !nearest_neighbor_pheromone.has_value()) {
         return pheromone;
@@ -35,4 +44,59 @@ Matrix createInitialPheromone(
     }
 
     return pheromone;
+}
+
+bool calculateMinMaxPheromoneBounds(
+    double q,
+    double evaporation,
+    double best_distance,
+    int n_cities,
+    double tau_ratio,
+    double& tau_min,
+    double& tau_max
+) {
+    if (
+        n_cities <= 0
+        || best_distance <= 0.0
+        || !std::isfinite(best_distance)
+    ) {
+        return false;
+    }
+
+    tau_max = q / std::max(evaporation * best_distance, 1e-12);
+    tau_min = tau_max / std::max(
+        tau_ratio * static_cast<double>(n_cities),
+        1.0
+    );
+    return true;
+}
+
+void applyMinMaxPheromone(
+    Matrix& pheromone,
+    double q,
+    double evaporation,
+    double best_distance,
+    int n_cities,
+    double tau_ratio
+) {
+    double tau_min = 0.0;
+    double tau_max = 0.0;
+
+    if (!calculateMinMaxPheromoneBounds(
+        q,
+        evaporation,
+        best_distance,
+        n_cities,
+        tau_ratio,
+        tau_min,
+        tau_max
+    )) {
+        return;
+    }
+
+    for (std::vector<double>& row : pheromone) {
+        for (double& value : row) {
+            value = std::clamp(value, tau_min, tau_max);
+        }
+    }
 }

@@ -19,6 +19,10 @@ struct AcoParams {
     std::optional<int> blind_stagnation_limit = 10;
     int blind_iterations = 5;
     double blind_blend_weight = 0.3;
+    double ant_parameter_variation = 0.1;
+    bool use_min_max_pheromone = false;
+    double min_max_tau_ratio = 2.0;
+    std::optional<int> pheromone_deposit_top_ants = std::nullopt;
 };
 
 double getEvaporationRate(

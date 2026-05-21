@@ -7,11 +7,30 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <limits>
 #include <numeric>
-#include <optional>
 #include <random>
 
 namespace {
+
+double varyParameter(
+    double value,
+    double variation,
+    RandomContext& rng
+) {
+    if (variation <= 0.0) {
+        return value;
+    }
+
+    const double lower_multiplier = std::max(0.0, 1.0 - variation);
+    const double upper_multiplier = 1.0 + variation;
+    std::uniform_real_distribution<double> distribution(
+        lower_multiplier,
+        upper_multiplier
+    );
+
+    return value * distribution(rng.python_rng);
+}
 
 int chooseByWeights(
     const std::vector<double>& weights,
@@ -106,6 +125,77 @@ std::vector<int> buildDistanceOnlyPath(
     return visited_path;
 }
 
+void countPathEdges(Matrix& edge_usage_counts, const std::vector<int>& path) {
+    for (std::size_t index = 0; index + 1 < path.size(); ++index) {
+        const std::size_t a = static_cast<std::size_t>(path[index]);
+        const std::size_t b = static_cast<std::size_t>(path[index + 1]);
+        edge_usage_counts[a][b] += 1.0;
+        edge_usage_counts[b][a] += 1.0;
+    }
+
+    const std::size_t a = static_cast<std::size_t>(path.back());
+    const std::size_t b = static_cast<std::size_t>(path.front());
+    edge_usage_counts[a][b] += 1.0;
+    edge_usage_counts[b][a] += 1.0;
+}
+
+Matrix createUsageBasedPheromone(
+    const Matrix& edge_usage_counts,
+    double tau_min,
+    double tau_max
+) {
+    const std::size_t n_cities = edge_usage_counts.size();
+    Matrix pheromone = createFlatPheromone(n_cities, tau_min);
+
+    if (n_cities < 2) {
+        return pheromone;
+    }
+
+    double min_count = std::numeric_limits<double>::infinity();
+    double max_count = -std::numeric_limits<double>::infinity();
+
+    for (std::size_t row = 0; row < n_cities; ++row) {
+        for (std::size_t col = 0; col < n_cities; ++col) {
+            if (row == col) {
+                continue;
+            }
+
+            min_count = std::min(min_count, edge_usage_counts[row][col]);
+            max_count = std::max(max_count, edge_usage_counts[row][col]);
+        }
+    }
+
+    if (max_count == min_count) {
+        const double middle = (tau_min + tau_max) / 2.0;
+
+        for (std::size_t row = 0; row < n_cities; ++row) {
+            for (std::size_t col = 0; col < n_cities; ++col) {
+                if (row != col) {
+                    pheromone[row][col] = middle;
+                }
+            }
+        }
+
+        return pheromone;
+    }
+
+    for (std::size_t row = 0; row < n_cities; ++row) {
+        for (std::size_t col = 0; col < n_cities; ++col) {
+            if (row == col) {
+                continue;
+            }
+
+            const double normalized_count =
+                (edge_usage_counts[row][col] - min_count)
+                / (max_count - min_count);
+            pheromone[row][col] = tau_min
+                + normalized_count * (tau_max - tau_min);
+        }
+    }
+
+    return pheromone;
+}
+
 double offDiagonalMean(const Matrix& matrix) {
     const std::size_t n_rows = matrix.size();
 
@@ -154,50 +244,77 @@ BlindAcoResult runBlindAco(
     double q,
     double base_pheromone,
     bool cross_check,
+    double beta_variation,
+    bool use_min_max_pheromone,
+    double min_max_tau_ratio,
+    std::optional<std::pair<double, double>> pheromone_bounds,
     RandomContext& rng
 ) {
-    Matrix pheromone = createInitialPheromone(
-        distances,
-        base_pheromone,
-        std::nullopt
+    (void)use_min_max_pheromone;
+
+    const int n_cities = static_cast<int>(distances.size());
+    Matrix edge_usage_counts = createFlatPheromone(
+        static_cast<std::size_t>(n_cities),
+        0.0
     );
     std::vector<double> best_per_iteration;
+    double best_distance_so_far = std::numeric_limits<double>::infinity();
 
     for (int iteration = 0; iteration < n_iterations; ++iteration) {
-        std::vector<std::vector<int>> all_paths;
         std::vector<double> all_distances;
 
         for (int ant = 0; ant < n_ants; ++ant) {
-            std::vector<int> path = buildDistanceOnlyPath(distances, beta, rng);
+            const double ant_beta = varyParameter(beta, beta_variation, rng);
+            std::vector<int> path = buildDistanceOnlyPath(
+                distances,
+                ant_beta,
+                rng
+            );
 
             if (cross_check && coords != nullptr) {
                 path = twoOptCrossCheck(path, *coords);
             }
 
             const double distance = calculateDistance(path, distances);
-            all_paths.push_back(path);
             all_distances.push_back(distance);
+            countPathEdges(edge_usage_counts, path);
         }
 
-        best_per_iteration.push_back(
-            *std::min_element(all_distances.begin(), all_distances.end())
+        const double iteration_best_distance =
+            *std::min_element(all_distances.begin(), all_distances.end());
+        best_per_iteration.push_back(iteration_best_distance);
+        best_distance_so_far = std::min(
+            best_distance_so_far,
+            iteration_best_distance
         );
+    }
 
-        for (std::vector<double>& row : pheromone) {
-            for (double& value : row) {
-                value *= (1.0 - evaporation);
-            }
-        }
+    if (!pheromone_bounds.has_value()) {
+        double tau_min = 0.0;
+        double tau_max = 0.0;
 
-        for (std::size_t index = 0; index < all_paths.size(); ++index) {
-            depositPheromone(
-                pheromone,
-                all_paths[index],
-                all_distances[index],
-                q
-            );
+        if (calculateMinMaxPheromoneBounds(
+            q,
+            evaporation,
+            best_distance_so_far,
+            n_cities,
+            min_max_tau_ratio,
+            tau_min,
+            tau_max
+        )) {
+            pheromone_bounds = std::make_pair(tau_min, tau_max);
         }
     }
+
+    if (!pheromone_bounds.has_value()) {
+        pheromone_bounds = std::make_pair(base_pheromone, base_pheromone);
+    }
+
+    Matrix pheromone = createUsageBasedPheromone(
+        edge_usage_counts,
+        pheromone_bounds->first,
+        pheromone_bounds->second
+    );
 
     return {pheromone, best_per_iteration};
 }
@@ -205,13 +322,14 @@ BlindAcoResult runBlindAco(
 Matrix blendPheromones(
     const Matrix& current_pheromone,
     Matrix blind_pheromone,
-    double blind_weight
+    double blind_weight,
+    bool normalize_blind
 ) {
     const double current_weight = 1.0 - blind_weight;
     const double current_mean = offDiagonalMean(current_pheromone);
     const double blind_mean = offDiagonalMean(blind_pheromone);
 
-    if (blind_mean > 0.0) {
+    if (normalize_blind && blind_mean > 0.0) {
         const double scale = current_mean / blind_mean;
 
         for (std::vector<double>& row : blind_pheromone) {
