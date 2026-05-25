@@ -99,7 +99,61 @@ std::vector<std::size_t> selectPheromoneDepositIndices(
     return indices;
 }
 
+double clamp01(double value) {
+    return std::clamp(value, 0.0, 1.0);
+}
+
+double exponentialProgress(double progress, double curve) {
+    if (std::abs(curve) < 1e-12) {
+        return progress;
+    }
+
+    const double numerator = std::exp(curve * progress) - 1.0;
+    const double denominator = std::exp(curve) - 1.0;
+
+    if (std::abs(denominator) < 1e-12) {
+        return progress;
+    }
+
+    return clamp01(numerator / denominator);
+}
+
+double logarithmicProgress(double progress, double curve) {
+    const double bend = std::abs(curve);
+
+    if (bend < 1e-12) {
+        return progress;
+    }
+
+    const double denominator = std::log1p(bend);
+
+    if (denominator <= 0.0) {
+        return progress;
+    }
+
+    if (curve >= 0.0) {
+        return clamp01(std::log1p(bend * progress) / denominator);
+    }
+
+    return clamp01(
+        1.0 - std::log1p(bend * (1.0 - progress)) / denominator
+    );
+}
+
 } // namespace
+
+const char* evaporationScheduleName(EvaporationSchedule schedule) {
+    switch (schedule) {
+        case EvaporationSchedule::Linear:
+            return "linear";
+        case EvaporationSchedule::Exponential:
+            return "exponential";
+        case EvaporationSchedule::Logarithmic:
+            return "logarithmic";
+    }
+
+    return "unknown";
+}
 
 double getEvaporationRate(
     int iteration,
@@ -115,6 +169,38 @@ double getEvaporationRate(
         / static_cast<double>(n_iterations - 1);
     return start_evaporation
         - (start_evaporation - end_evaporation) * progress;
+}
+
+double getEvaporationRate(
+    int iteration,
+    int n_iterations,
+    double start_evaporation,
+    double end_evaporation,
+    EvaporationSchedule schedule,
+    double curve
+) {
+    if (n_iterations <= 1) {
+        return start_evaporation;
+    }
+
+    const double progress = static_cast<double>(iteration)
+        / static_cast<double>(n_iterations - 1);
+    double shaped_progress = progress;
+
+    switch (schedule) {
+        case EvaporationSchedule::Linear:
+            shaped_progress = progress;
+            break;
+        case EvaporationSchedule::Exponential:
+            shaped_progress = exponentialProgress(progress, curve);
+            break;
+        case EvaporationSchedule::Logarithmic:
+            shaped_progress = logarithmicProgress(progress, curve);
+            break;
+    }
+
+    return start_evaporation
+        - (start_evaporation - end_evaporation) * shaped_progress;
 }
 
 AcoResult runAco(
@@ -144,7 +230,9 @@ AcoResult runAco(
             iteration,
             params.n_iterations,
             params.evaporation,
-            params.end_evaporation
+            params.end_evaporation,
+            params.evaporation_schedule,
+            params.evaporation_curve
         );
         result.evaporation_history.push_back(current_evaporation);
 

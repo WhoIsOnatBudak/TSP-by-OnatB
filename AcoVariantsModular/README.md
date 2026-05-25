@@ -8,6 +8,16 @@ It keeps the same behavior and compares the same four algorithms:
 - `ElitistAS`
 - `MaxMinAS`
 
+`MaxMinAS` uses the paper-style MMAS pheromone limits with
+`p_best = 0.05`:
+
+```text
+p_dec = p_best^(1 / n_cities)
+tau_min = tau_max * (1 - p_dec) / ((n_cities / 2 - 1) * p_dec)
+```
+
+`BlindBlendAS` keeps its existing project-specific min-max clamp.
+
 The code is split by responsibility:
 
 - `types.hpp`: shared data structures and parameters
@@ -30,4 +40,3 @@ Outputs:
 - `output/summary.csv`
 - `output/convergence.csv`
 - `output/convergence.svg`
-

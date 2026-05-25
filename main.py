@@ -61,6 +61,8 @@ def main():
         use_min_max_pheromone=True,
         min_max_tau_ratio=2.0,
         pheromone_deposit_top_ants=1,
+        evaporation_schedule="linear",
+        evaporation_curve=1.0,
         return_blind_history=True
     )
 

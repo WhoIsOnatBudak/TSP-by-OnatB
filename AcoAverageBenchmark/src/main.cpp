@@ -23,20 +23,26 @@ struct DistanceData {
     std::vector<Point> coords;
 };
 
+enum class EvaporationSchedule {
+    Linear,
+    Exponential,
+    Logarithmic
+};
+
 struct Params {
     int n_cities = 100;
     int n_ants = 100;
     int n_iterations = 200;
     double alpha = 1.0;
     double beta = 3.0;
-    double evaporation = 0.7;
-    double end_evaporation = 0.3;
+    double evaporation = 0.6;
+    double end_evaporation = 0.2;
     double classic_evaporation = 0.5;
     double q = 2000.0;
     double base_pheromone = 1.0;
-    double nearest_neighbor_pheromone = 1.1;
-    double ant_parameter_variation = 0.05;
-    bool cross_check = true;
+    double nearest_neighbor_pheromone = 2.0;
+    double ant_parameter_variation = 0.1;
+    bool cross_check = false;
     int blind_stagnation_limit = 30;
     int blind_iterations = 5;
     double blind_blend_weight = 0.5;
@@ -44,7 +50,9 @@ struct Params {
     double min_max_tau_ratio = 2.0;
     int pheromone_deposit_top_ants = 1;
     int elitist_weight = 5;
-    double max_min_tau_ratio = 2.0;
+    double max_min_p_best = 0.05;
+    EvaporationSchedule evaporation_schedule = EvaporationSchedule::Exponential;
+    double evaporation_curve = -2.0;
 };
 
 struct AcoResult {
@@ -273,6 +281,79 @@ double getEvaporationRate(
         / static_cast<double>(n_iterations - 1);
     return start_evaporation
         - (start_evaporation - end_evaporation) * progress;
+}
+
+double clamp01(double value) {
+    return std::clamp(value, 0.0, 1.0);
+}
+
+double exponentialProgress(double progress, double curve) {
+    if (std::abs(curve) < 1e-12) {
+        return progress;
+    }
+
+    const double numerator = std::exp(curve * progress) - 1.0;
+    const double denominator = std::exp(curve) - 1.0;
+
+    if (std::abs(denominator) < 1e-12) {
+        return progress;
+    }
+
+    return clamp01(numerator / denominator);
+}
+
+double logarithmicProgress(double progress, double curve) {
+    const double bend = std::abs(curve);
+
+    if (bend < 1e-12) {
+        return progress;
+    }
+
+    const double denominator = std::log1p(bend);
+
+    if (denominator <= 0.0) {
+        return progress;
+    }
+
+    if (curve >= 0.0) {
+        return clamp01(std::log1p(bend * progress) / denominator);
+    }
+
+    return clamp01(
+        1.0 - std::log1p(bend * (1.0 - progress)) / denominator
+    );
+}
+
+double getEvaporationRate(
+    int iteration,
+    int n_iterations,
+    double start_evaporation,
+    double end_evaporation,
+    EvaporationSchedule schedule,
+    double curve
+) {
+    if (n_iterations <= 1) {
+        return start_evaporation;
+    }
+
+    const double progress = static_cast<double>(iteration)
+        / static_cast<double>(n_iterations - 1);
+    double shaped_progress = progress;
+
+    switch (schedule) {
+        case EvaporationSchedule::Linear:
+            shaped_progress = progress;
+            break;
+        case EvaporationSchedule::Exponential:
+            shaped_progress = exponentialProgress(progress, curve);
+            break;
+        case EvaporationSchedule::Logarithmic:
+            shaped_progress = logarithmicProgress(progress, curve);
+            break;
+    }
+
+    return start_evaporation
+        - (start_evaporation - end_evaporation) * shaped_progress;
 }
 
 double varyParameter(double value, double variation, std::mt19937& rng) {
@@ -544,6 +625,44 @@ bool calculateMinMaxBounds(
         tau_ratio * static_cast<double>(n_cities),
         1.0
     );
+    return true;
+}
+
+bool calculateMmasBounds(
+    double q,
+    double evaporation,
+    double best_distance,
+    int n_cities,
+    double p_best,
+    double& tau_min,
+    double& tau_max
+) {
+    if (
+        n_cities <= 1
+        || best_distance <= 0.0
+        || !std::isfinite(best_distance)
+        || p_best <= 0.0
+        || p_best >= 1.0
+    ) {
+        return false;
+    }
+
+    tau_max = q / std::max(evaporation * best_distance, 1e-12);
+
+    const double p_decision = std::pow(
+        p_best,
+        1.0 / static_cast<double>(n_cities)
+    );
+    const double average_choices = static_cast<double>(n_cities) / 2.0;
+    const double denominator = (average_choices - 1.0) * p_decision;
+
+    if (denominator <= 0.0) {
+        tau_min = tau_max;
+        return true;
+    }
+
+    tau_min = tau_max * (1.0 - p_decision) / denominator;
+    tau_min = std::clamp(tau_min, 0.0, tau_max);
     return true;
 }
 
@@ -820,7 +939,9 @@ AcoResult runVariant(
                 iteration,
                 params.n_iterations,
                 params.evaporation,
-                params.end_evaporation
+                params.end_evaporation,
+                params.evaporation_schedule,
+                params.evaporation_curve
             )
             : params.classic_evaporation;
 
@@ -939,18 +1060,19 @@ AcoResult runVariant(
                 params.q
             );
 
-            const double tau_max = params.q
-                / std::max(
-                    current_evaporation * result.best_distance,
-                    1e-12
-                );
-            const double tau_min = tau_max
-                / std::max(
-                    params.max_min_tau_ratio
-                        * static_cast<double>(params.n_cities),
-                    1.0
-                );
-            clampPheromone(pheromone, tau_min, tau_max);
+            double tau_min = 0.0;
+            double tau_max = 0.0;
+            if (calculateMmasBounds(
+                params.q,
+                current_evaporation,
+                result.best_distance,
+                params.n_cities,
+                params.max_min_p_best,
+                tau_min,
+                tau_max
+            )) {
+                clampPheromone(pheromone, tau_min, tau_max);
+            }
         }
     }
 
@@ -1049,8 +1171,8 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-     int start_city = argc > 1 ? parseIntArg(argv, 1, 100) : 100;
-     int city_span = argc > 2 ? parseIntArg(argv, 2, 10) : 10;
+    const int start_city = argc > 1 ? parseIntArg(argv, 1, 100) : 100;
+    const int city_span = argc > 2 ? parseIntArg(argv, 2, 10) : 100;
     const int n_ants = argc > 3 ? parseIntArg(argv, 3, 100) : 100;
     const int n_iterations = argc > 4 ? parseIntArg(argv, 4, 200) : 200;
     const bool cross_check = argc > 5 ? parseIntArg(argv, 5, 1) != 0 : true;
@@ -1059,10 +1181,6 @@ int main(int argc, char** argv) {
         printUsage(argv[0]);
         return 1;
     }
-
-    start_city = 100;
-    city_span = 100;
-
 
     std::vector<DetailRow> detail_rows;
     std::cout << std::fixed << std::setprecision(8);

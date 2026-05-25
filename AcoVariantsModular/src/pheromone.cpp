@@ -158,6 +158,44 @@ bool calculateMinMaxBounds(
     return true;
 }
 
+bool calculateMmasBounds(
+    double q,
+    double evaporation,
+    double best_distance,
+    int n_cities,
+    double p_best,
+    double& tau_min,
+    double& tau_max
+) {
+    if (
+        n_cities <= 1
+        || best_distance <= 0.0
+        || !std::isfinite(best_distance)
+        || p_best <= 0.0
+        || p_best >= 1.0
+    ) {
+        return false;
+    }
+
+    tau_max = q / std::max(evaporation * best_distance, 1e-12);
+
+    const double p_decision = std::pow(
+        p_best,
+        1.0 / static_cast<double>(n_cities)
+    );
+    const double average_choices = static_cast<double>(n_cities) / 2.0;
+    const double denominator = (average_choices - 1.0) * p_decision;
+
+    if (denominator <= 0.0) {
+        tau_min = tau_max;
+        return true;
+    }
+
+    tau_min = tau_max * (1.0 - p_decision) / denominator;
+    tau_min = std::clamp(tau_min, 0.0, tau_max);
+    return true;
+}
+
 void applyMinMaxPheromone(
     Matrix& pheromone,
     double q,
@@ -322,4 +360,3 @@ Matrix createUsageBasedPheromone(
 }
 
 }  // namespace aco
-

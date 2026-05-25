@@ -213,18 +213,19 @@ AcoResult runVariant(
                 params.q
             );
 
-            const double tau_max = params.q
-                / std::max(
-                    current_evaporation * result.best_distance,
-                    1e-12
-                );
-            const double tau_min = tau_max
-                / std::max(
-                    params.max_min_tau_ratio
-                        * static_cast<double>(params.n_cities),
-                    1.0
-                );
-            clampPheromone(pheromone, tau_min, tau_max);
+            double tau_min = 0.0;
+            double tau_max = 0.0;
+            if (calculateMmasBounds(
+                params.q,
+                current_evaporation,
+                result.best_distance,
+                params.n_cities,
+                params.max_min_p_best,
+                tau_min,
+                tau_max
+            )) {
+                clampPheromone(pheromone, tau_min, tau_max);
+            }
         }
 
         result.history.push_back({
@@ -238,4 +239,3 @@ AcoResult runVariant(
 }
 
 }  // namespace aco
-

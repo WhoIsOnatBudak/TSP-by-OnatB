@@ -1,0 +1,15 @@
+Parameter sweep report
+======================
+
+Base values are taken from TestC++/src/main.cpp.
+Each row changes exactly one parameter from the base setup.
+n_cities: 100
+runs_per_value: 20
+
+Recommended values by average best distance:
+- ant_parameter_variation = 0.1000 | avg_best=15541.59370119 | stddev=492.03069160 | avg_blind_rounds=20.75000000
+- base_pheromone = 2.0000 | avg_best=15516.59587255 | stddev=489.64760417 | avg_blind_rounds=23.00000000
+- blind_blend_weight = 0.5000 | avg_best=15541.59370119 | stddev=492.03069160 | avg_blind_rounds=20.75000000
+- blind_iterations = 3 | avg_best=15533.51377681 | stddev=493.12112146 | avg_blind_rounds=12.45000000
+- blind_stagnation_limit = 10 | avg_best=15541.59370119 | stddev=492.03069160 | avg_blind_rounds=20.75000000
+- nearest_neighbor_pheromone = 2.0000 | avg_best=15513.87155537 | stddev=483.93106880 | avg_blind_rounds=20.50000000

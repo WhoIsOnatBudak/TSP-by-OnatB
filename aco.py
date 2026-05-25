@@ -47,24 +47,71 @@ def select_pheromone_deposit_paths(all_paths, all_distances, deposit_top_ants):
     ]
 
 
-# def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # sabit
-#     return 0.5
+def _clamp01(value):
+    return min(max(value, 0.0), 1.0)
 
-def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation):  # Lineer azalma / best
+
+def _exponential_progress(progress, curve):
+    if abs(curve) < 1e-12:
+        return progress
+
+    numerator = np.exp(curve * progress) - 1.0
+    denominator = np.exp(curve) - 1.0
+
+    if abs(denominator) < 1e-12:
+        return progress
+
+    return float(_clamp01(numerator / denominator))
+
+
+def _logarithmic_progress(progress, curve):
+    bend = abs(curve)
+
+    if bend < 1e-12:
+        return progress
+
+    denominator = np.log1p(bend)
+
+    if denominator <= 0:
+        return progress
+
+    if curve >= 0:
+        return float(_clamp01(np.log1p(bend * progress) / denominator))
+
+    return float(_clamp01(
+        1.0 - np.log1p(bend * (1.0 - progress)) / denominator
+    ))
+
+
+def get_evaporation_rate(
+    iteration,
+    n_iterations,
+    start_evaporation,
+    end_evaporation,
+    schedule="linear",
+    curve=1.0
+):
+    if n_iterations <= 1:
+        return start_evaporation
+
     progress = iteration / (n_iterations - 1)
-    evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
-    return evaporation
+    normalized_schedule = schedule.lower()
 
+    if normalized_schedule == "linear":
+        shaped_progress = progress
+    elif normalized_schedule in ("exponential", "exp", "ussel", "üstel"):
+        shaped_progress = _exponential_progress(progress, curve)
+    elif normalized_schedule in ("logarithmic", "log", "logaritmik"):
+        shaped_progress = _logarithmic_progress(progress, curve)
+    else:
+        raise ValueError(
+            "evaporation_schedule must be linear, exponential, or logarithmic"
+        )
 
-#def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Ussel azalma
-#     progress = np.log1p(iteration) / np.log1p(n_iterations - 1)
-#     evaporation = start_evaporation - (start_evaporation - end_evaporation) * progress
-#     return evaporation
-
-# def get_evaporation_rate(iteration, n_iterations, start_evaporation, end_evaporation): # Logaritmik azalma
-#     ratio = iteration / (n_iterations - 1)
-#     evaporation = start_evaporation * ((end_evaporation / start_evaporation) ** ratio)
-#     return evaporation
+    evaporation = start_evaporation - (
+        start_evaporation - end_evaporation
+    ) * shaped_progress
+    return float(evaporation)
 
 
 def run_aco(
@@ -87,6 +134,8 @@ def run_aco(
     use_min_max_pheromone=False,
     min_max_tau_ratio=2.0,
     pheromone_deposit_top_ants=None,
+    evaporation_schedule="linear",
+    evaporation_curve=1.0,
     return_blind_history=False
 ):
     n_cities = len(distances)
@@ -112,7 +161,9 @@ def run_aco(
             iteration=iteration,
             n_iterations=n_iterations,
             start_evaporation=evaporation,
-            end_evaporation=end_evaporation
+            end_evaporation=end_evaporation,
+            schedule=evaporation_schedule,
+            curve=evaporation_curve
         )
         evaporation_history.append(current_evaporation)
 

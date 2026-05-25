@@ -17,6 +17,8 @@ int main() {
         static_cast<double>(params.n_cities * 20)
     );
 
+    std::cout<<params.n_cities<<"\n"; 
+
     std::vector<aco::AcoResult> results;
     results.push_back(aco::runVariant(
         aco::Variant::BlindBlendAS,
