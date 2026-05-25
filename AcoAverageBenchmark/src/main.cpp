@@ -1187,7 +1187,8 @@ int main(int argc, char** argv) {
     std::cout << "Running city counts " << start_city << ".."
               << start_city + city_span << " inclusive\n";
 
-    for (int n_cities = start_city; n_cities <= start_city + city_span; ++n_cities) {
+    for (int spa = start_city; spa <= start_city + city_span; ++spa) {
+        int n_cities=200;
         Params params;
         params.n_cities = n_cities;
         params.n_ants = n_ants;
@@ -1197,7 +1198,7 @@ int main(int argc, char** argv) {
 
         const DistanceData data = generateEuclideanDistances(
             n_cities,
-            static_cast<unsigned int>(47 + n_cities),
+            static_cast<unsigned int>(47 + spa),
             static_cast<double>(n_cities * 20)
         );
 
@@ -1215,7 +1216,7 @@ int main(int argc, char** argv) {
                 result.best_distance / static_cast<double>(n_cities);
 
             detail_rows.push_back({
-                n_cities,
+                spa,
                 result.name,
                 result.best_distance,
                 distance_per_city
