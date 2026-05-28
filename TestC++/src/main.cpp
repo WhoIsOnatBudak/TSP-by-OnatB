@@ -17,7 +17,7 @@ int main() {
     );
 
     AcoParams params;
-    params.n_ants = 100;
+    params.n_ants = 120;
     params.n_iterations = 200;
     params.alpha = 1.0;
     params.beta = 3.0;

@@ -220,11 +220,12 @@ AcoResult runAco(
     result.pheromone = pheromone;
 
     int stagnation_counter = 0;
+    double stagnation_reference_best =
+        std::numeric_limits<double>::infinity();
 
     for (int iteration = 0; iteration < params.n_iterations; ++iteration) {
         std::vector<std::vector<int>> all_paths;
         std::vector<double> all_distances;
-        bool improved_this_iteration = false;
 
         const double current_evaporation = getEvaporationRate(
             iteration,
@@ -326,13 +327,12 @@ AcoResult runAco(
             if (distance < result.best_distance) {
                 result.best_distance = distance;
                 result.best_path = visited_path;
-                improved_this_iteration = true;
             }
         }
 
-        result.best_per_iteration.push_back(
-            *std::min_element(all_distances.begin(), all_distances.end())
-        );
+        const double iteration_best_distance =
+            *std::min_element(all_distances.begin(), all_distances.end());
+        result.best_per_iteration.push_back(iteration_best_distance);
 
         for (std::vector<double>& row : pheromone) {
             for (double& value : row) {
@@ -366,7 +366,8 @@ AcoResult runAco(
             );
         }
 
-        if (improved_this_iteration) {
+        if (iteration_best_distance < stagnation_reference_best) {
+            stagnation_reference_best = iteration_best_distance;
             stagnation_counter = 0;
         } else {
             ++stagnation_counter;
@@ -446,6 +447,8 @@ AcoResult runAco(
             }
 
             stagnation_counter = 0;
+            stagnation_reference_best =
+                std::numeric_limits<double>::infinity();
         }
     }
 

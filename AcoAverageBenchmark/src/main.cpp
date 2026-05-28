@@ -1175,7 +1175,7 @@ int main(int argc, char** argv) {
     const int city_span = argc > 2 ? parseIntArg(argv, 2, 10) : 100;
     const int n_ants = argc > 3 ? parseIntArg(argv, 3, 100) : 100;
     const int n_iterations = argc > 4 ? parseIntArg(argv, 4, 200) : 200;
-    const bool cross_check = argc > 5 ? parseIntArg(argv, 5, 1) != 0 : true;
+    const bool cross_check = argc > 5 ? parseIntArg(argv, 5, 1) != 0 : false;
 
     if (start_city < 2 || city_span < 0 || n_ants < 1 || n_iterations < 1) {
         printUsage(argv[0]);
@@ -1188,7 +1188,7 @@ int main(int argc, char** argv) {
               << start_city + city_span << " inclusive\n";
 
     for (int spa = start_city; spa <= start_city + city_span; ++spa) {
-        int n_cities=200;
+        int n_cities=spa;
         Params params;
         params.n_cities = n_cities;
         params.n_ants = n_ants;
