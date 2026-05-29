@@ -316,10 +316,22 @@ def write_parameter_svg(parameter, points, output_path):
     output_path.write_text("\n".join(parts), encoding="utf-8")
 
 
-def write_svgs(summaries, output_dir):
+def write_svgs(summaries, output_dir, selected_parameter):
     output_paths = []
 
-    for parameter in sorted(summaries):
+    parameters = sorted(summaries)
+
+    if selected_parameter != "all":
+        if selected_parameter not in summaries:
+            available = ", ".join(parameters)
+            raise ValueError(
+                f"Parameter '{selected_parameter}' not found. "
+                f"Available parameters: {available}"
+            )
+
+        parameters = [selected_parameter]
+
+    for parameter in parameters:
         output_path = output_dir / f"parameter_sweep_{parameter}.svg"
         write_parameter_svg(parameter, summaries[parameter], output_path)
         output_paths.append(output_path)
@@ -328,13 +340,14 @@ def write_svgs(summaries, output_dir):
 
 
 def main():
-    input_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("Rapor/parameter_sweep_detail.csv")
-    output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("Rapor")
+    input_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("Rapor/sweep/parameter_sweep_detail.csv")
+    output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("Rapor/ImagesCSV")
+    selected_parameter = sys.argv[3] if len(sys.argv) > 3 else "base_pheromone"
     rows = read_rows(input_path)
     summaries = summarize(rows)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    for output_path in write_svgs(summaries, output_dir):
+    for output_path in write_svgs(summaries, output_dir, selected_parameter):
         print(f"Wrote {output_path}")
 
 
