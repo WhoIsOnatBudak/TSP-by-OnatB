@@ -55,20 +55,38 @@ struct Params {
     double evaporation_curve = -2.0;
 };
 
+struct IterationRecord {
+    int iteration = 0;
+    double iteration_best_distance = 0.0;
+    double global_best_distance = 0.0;
+};
+
 struct AcoResult {
     std::string name;
     std::vector<int> best_path;
     double best_distance = std::numeric_limits<double>::infinity();
+    std::vector<IterationRecord> history;
 };
 
 struct DetailRow {
+    int run_id = 0;
     int n_cities = 0;
     std::string algorithm;
     double best_distance = 0.0;
     double distance_per_city = 0.0;
 };
 
+struct IterationRow {
+    int run_id = 0;
+    int n_cities = 0;
+    std::string algorithm;
+    int iteration = 0;
+    double iteration_best_distance = 0.0;
+    double global_best_distance = 0.0;
+};
+
 struct AverageRow {
+    int n_cities = 0;
     std::string algorithm;
     int runs = 0;
     double average_best_distance = 0.0;
@@ -1074,6 +1092,12 @@ AcoResult runVariant(
                 clampPheromone(pheromone, tau_min, tau_max);
             }
         }
+
+        result.history.push_back({
+            iteration + 1,
+            iteration_best_distance,
+            result.best_distance
+        });
     }
 
     return result;
@@ -1101,6 +1125,10 @@ std::vector<AverageRow> buildAverageRows(
                 continue;
             }
 
+            if (average.runs == 0) {
+                average.n_cities = row.n_cities;
+            }
+
             ++average.runs;
             average.average_best_distance += row.best_distance;
             average.average_distance_per_city += row.distance_per_city;
@@ -1126,24 +1154,25 @@ std::vector<AverageRow> buildAverageRows(
 }
 
 void writeDetailCsv(
-    const std::string& directory,
+    const std::filesystem::path& path,
     const std::vector<DetailRow>& rows
 ) {
-    std::ofstream file(std::filesystem::path(directory) / "detail.csv");
+    std::ofstream file(path);
     file << "n_cities,algorithm,best_distance,distance_per_city\n";
     file << std::fixed << std::setprecision(8);
 
     for (const DetailRow& row : rows) {
-        file << row.n_cities << "," << row.algorithm << ","
-             << row.best_distance << "," << row.distance_per_city << "\n";
+        file << row.run_id << "," << row.algorithm << ","
+             << row.best_distance << ","
+             << row.distance_per_city << "\n";
     }
 }
 
 void writeAverageCsv(
-    const std::string& directory,
+    const std::filesystem::path& path,
     const std::vector<AverageRow>& rows
 ) {
-    std::ofstream file(std::filesystem::path(directory) / "average.csv");
+    std::ofstream file(path);
     file << "algorithm,runs,average_best_distance,"
          << "average_distance_per_city,best_distance,worst_distance\n";
     file << std::fixed << std::setprecision(8);
@@ -1156,13 +1185,43 @@ void writeAverageCsv(
     }
 }
 
+void writeIterationsCsv(
+    const std::filesystem::path& path,
+    const std::vector<IterationRow>& rows
+) {
+    std::ofstream file(path);
+    file << "run_id,n_cities,algorithm,iteration,"
+         << "iteration_best_distance,global_best_distance\n";
+    file << std::fixed << std::setprecision(8);
+
+    for (const IterationRow& row : rows) {
+        file << row.run_id << "," << row.n_cities << ","
+             << row.algorithm << "," << row.iteration << ","
+             << row.iteration_best_distance << ","
+             << row.global_best_distance << "\n";
+    }
+}
+
+std::string outputFileName(
+    const std::string& kind,
+    const std::string& cross_check_label,
+    int n_cities
+) {
+    return kind + "_" + cross_check_label + "_all"
+        + std::to_string(n_cities) + ".csv";
+}
+
 void printUsage(const char* executable) {
     std::cout << "Usage:\n"
               << "  " << executable
-              << " <start_city> <x> [n_ants] [n_iterations] [cross_check]\n\n"
+              << " [start_run_id] [run_span] [n_ants] "
+              << "[n_iterations] [cross_check]\n\n"
               << "Example:\n"
-              << "  " << executable << " 100 10 80 150 1\n\n"
-              << "This runs city counts start_city..start_city+x inclusive.\n";
+              << "  " << executable << " 100 100 80 150 1\n\n"
+              << "This runs 100, 150, 200, and 250 city benchmarks. "
+              << "Only the selected cross-check mode is included. "
+              << "Run ids are start_run_id..start_run_id+run_span inclusive. "
+              << "Map seeds remain 47 + run_id.\n";
 }
 
 int main(int argc, char** argv) {
@@ -1171,79 +1230,153 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    const int start_city = argc > 1 ? parseIntArg(argv, 1, 100) : 100;
-    const int city_span = argc > 2 ? parseIntArg(argv, 2, 10) : 100;
+    const int start_run_id = argc > 1 ? parseIntArg(argv, 1, 100) : 100;
+    const int run_span = argc > 2 ? parseIntArg(argv, 2, 100) : 100;
     const int n_ants = argc > 3 ? parseIntArg(argv, 3, 100) : 100;
     const int n_iterations = argc > 4 ? parseIntArg(argv, 4, 200) : 200;
-    const bool cross_check = argc > 5 ? parseIntArg(argv, 5, 1) != 0 : true;
+    const bool selected_cross_check =
+        argc > 5 ? parseIntArg(argv, 5, 0) != 0 : true;
+    const std::vector<int> city_sizes = { 100, 150, 200, 250};
+    const std::vector<bool> cross_check_modes = {selected_cross_check};
+    const std::string selected_cross_check_label =
+        selected_cross_check ? "wc" : "nc";
 
-    if (start_city < 2 || city_span < 0 || n_ants < 1 || n_iterations < 1) {
+    if (
+        start_run_id < 0
+        || run_span < 0
+        || n_ants < 1
+        || n_iterations < 1
+    ) {
         printUsage(argv[0]);
         return 1;
     }
 
-    std::vector<DetailRow> detail_rows;
     std::cout << std::fixed << std::setprecision(8);
-    std::cout << "Running city counts " << start_city << ".."
-              << start_city + city_span << " inclusive\n";
+    std::cout << "Running city sizes 100, 150, 200, 250\n"
+              << "Cross-check mode: "
+              << (selected_cross_check ? "true" : "false")
+              << " (" << selected_cross_check_label << ")\n"
+              << "Run ids " << start_run_id << ".."
+              << start_run_id + run_span
+              << " (map seed = 47 + run_id)\n";
 
-    for (int spa = start_city; spa <= start_city + city_span; ++spa) {
-        int n_cities=250;
-        Params params;
-        params.n_cities = n_cities;
-        params.n_ants = n_ants;
-        params.n_iterations = n_iterations;
-        params.cross_check = cross_check;
-        params.q = static_cast<double>(n_cities * 20);
+    std::filesystem::create_directories("output");
 
-        const DistanceData data = generateEuclideanDistances(
-            n_cities,
-            static_cast<unsigned int>(47 + spa),
-            static_cast<double>(n_cities * 20)
-        );
+    for (bool cross_check : cross_check_modes) {
+        const std::string cross_check_label = cross_check ? "wc" : "nc";
 
-        std::cout << "\nCities: " << spa << "\n";
+        std::cout << "\nCross-check: "
+                  << (cross_check ? "true" : "false")
+                  << " (" << cross_check_label << ")\n";
 
-        for (Variant variant : allVariants()) {
-            const AcoResult result = runVariant(
-                variant,
-                data.distances,
-                data.coords,
-                params,
-                static_cast<unsigned int>(43 + n_cities)
+        for (int n_cities : city_sizes) {
+            std::vector<DetailRow> detail_rows;
+            std::vector<IterationRow> iteration_rows;
+            Params params;
+            params.n_cities = n_cities;
+            params.n_ants = n_ants;
+            params.n_iterations = n_iterations;
+            params.cross_check = cross_check;
+            params.q = static_cast<double>(n_cities * 20);
+
+            std::cout << "\nCity size: " << n_cities
+                      << " (" << cross_check_label << "_all" << n_cities
+                      << ")\n";
+
+            for (
+                int spa = start_run_id;
+                spa <= start_run_id + run_span;
+                ++spa
+            ) {
+                const DistanceData data = generateEuclideanDistances(
+                    n_cities,
+                    static_cast<unsigned int>(47 + spa),
+                    static_cast<double>(n_cities * 20)
+                );
+
+                std::cout << "\nRun id: " << spa << "\n";
+
+                for (Variant variant : allVariants()) {
+                    const AcoResult result = runVariant(
+                        variant,
+                        data.distances,
+                        data.coords,
+                        params,
+                        static_cast<unsigned int>(43 + n_cities)
+                    );
+                    const double distance_per_city =
+                        result.best_distance / static_cast<double>(n_cities);
+
+                    detail_rows.push_back({
+                        spa,
+                        n_cities,
+                        result.name,
+                        result.best_distance,
+                        distance_per_city
+                    });
+
+                    for (const IterationRecord& record : result.history) {
+                        iteration_rows.push_back({
+                            spa,
+                            n_cities,
+                            result.name,
+                            record.iteration,
+                            record.iteration_best_distance,
+                            record.global_best_distance
+                        });
+                    }
+
+                    std::cout << "  " << std::left << std::setw(12)
+                              << result.name
+                              << " best=" << std::right << result.best_distance
+                              << " per_city=" << distance_per_city << "\n";
+                }
+            }
+
+            const std::vector<AverageRow> averages =
+                buildAverageRows(detail_rows);
+            const std::filesystem::path output_dir = "output";
+            writeDetailCsv(
+                output_dir / outputFileName(
+                    "detail",
+                    cross_check_label,
+                    n_cities
+                ),
+                detail_rows
             );
-            const double distance_per_city =
-                result.best_distance / static_cast<double>(n_cities);
+            writeAverageCsv(
+                output_dir / outputFileName(
+                    "average",
+                    cross_check_label,
+                    n_cities
+                ),
+                averages
+            );
+            writeIterationsCsv(
+                output_dir / outputFileName(
+                    "iterations",
+                    cross_check_label,
+                    n_cities
+                ),
+                iteration_rows
+            );
 
-            detail_rows.push_back({
-                spa,
-                result.name,
-                result.best_distance,
-                distance_per_city
-            });
+            std::cout << "\nAverage results for " << n_cities
+                      << " cities (" << cross_check_label << ")\n";
+            std::cout << "--------------------------------\n";
 
-            std::cout << "  " << std::left << std::setw(12) << result.name
-                      << " best=" << std::right << result.best_distance
-                      << " per_city=" << distance_per_city << "\n";
+            for (const AverageRow& row : averages) {
+                std::cout << std::left << std::setw(12) << row.algorithm
+                          << " avg_best=" << std::right
+                          << row.average_best_distance
+                          << " avg_per_city=" << row.average_distance_per_city
+                          << " best=" << row.best_distance
+                          << " worst=" << row.worst_distance << "\n";
+            }
         }
     }
 
-    const std::vector<AverageRow> averages = buildAverageRows(detail_rows);
-    std::filesystem::create_directories("output");
-    writeDetailCsv("output", detail_rows);
-    writeAverageCsv("output", averages);
-
-    std::cout << "\nAverage results\n";
-    std::cout << "---------------\n";
-
-    for (const AverageRow& row : averages) {
-        std::cout << std::left << std::setw(12) << row.algorithm
-                  << " avg_best=" << std::right << row.average_best_distance
-                  << " avg_per_city=" << row.average_distance_per_city
-                  << " best=" << row.best_distance
-                  << " worst=" << row.worst_distance << "\n";
-    }
-
-    std::cout << "\nFiles written to output/detail.csv and output/average.csv\n";
+    std::cout << "\nFiles written to output/*_"
+              << selected_cross_check_label << "_all*.csv\n";
     return 0;
 }

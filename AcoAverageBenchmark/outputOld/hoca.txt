@@ -1,0 +1,612 @@
+Cities: 100
+  BlindBlendAS best=15251.54950366 per_city=152.51549504
+  BaselineAS   best=15737.56234117 per_city=157.37562341
+  ElitistAS    best=15509.39943595 per_city=155.09399436
+  MaxMinAS     best=15326.92671112 per_city=153.26926711
+
+Cities: 101
+  BlindBlendAS best=15596.89691969 per_city=154.42472198
+  BaselineAS   best=16287.77759814 per_city=161.26512473
+  ElitistAS    best=15870.16648547 per_city=157.13036124
+  MaxMinAS     best=15616.46172003 per_city=154.61843287
+
+Cities: 102
+  BlindBlendAS best=16336.88640275 per_city=160.16555297
+  BaselineAS   best=16779.38416296 per_city=164.50376630
+  ElitistAS    best=16970.11681216 per_city=166.37369424
+  MaxMinAS     best=16395.26570489 per_city=160.73789907
+
+Cities: 103
+  BlindBlendAS best=16400.61317380 per_city=159.22925411
+  BaselineAS   best=16666.17747067 per_city=161.80754826
+  ElitistAS    best=16787.93162884 per_city=162.98962746
+  MaxMinAS     best=16429.84730062 per_city=159.51308059
+
+Cities: 104
+  BlindBlendAS best=17010.99522445 per_city=163.56726177
+  BaselineAS   best=17294.81893710 per_city=166.29633593
+  ElitistAS    best=17163.17704742 per_city=165.03054853
+  MaxMinAS     best=16965.66434113 per_city=163.13138790
+
+Cities: 105
+  BlindBlendAS best=16571.60284848 per_city=157.82478903
+  BaselineAS   best=16888.28621513 per_city=160.84082110
+  ElitistAS    best=16760.16338493 per_city=159.62060367
+  MaxMinAS     best=16698.96768252 per_city=159.03778745
+
+Cities: 106
+  BlindBlendAS best=17707.25915138 per_city=167.04961464
+  BaselineAS   best=18165.10835647 per_city=171.36894676
+  ElitistAS    best=18219.41916478 per_city=171.88131288
+  MaxMinAS     best=17493.03230956 per_city=165.02860669
+
+Cities: 107
+  BlindBlendAS best=17447.80871159 per_city=163.06363282
+  BaselineAS   best=18166.45858852 per_city=169.77998681
+  ElitistAS    best=17875.53078781 per_city=167.06103540
+  MaxMinAS     best=17636.23506973 per_city=164.82462682
+
+Cities: 108
+  BlindBlendAS best=17006.75747081 per_city=157.46997658
+  BaselineAS   best=17335.07465207 per_city=160.50995048
+  ElitistAS    best=17264.00341672 per_city=159.85188349
+  MaxMinAS     best=17124.92345071 per_city=158.56410603
+
+Cities: 109
+  BlindBlendAS best=17656.18515413 per_city=161.98335004
+  BaselineAS   best=18054.78463682 per_city=165.64022603
+  ElitistAS    best=18095.81896439 per_city=166.01668775
+  MaxMinAS     best=17640.65168604 per_city=161.84084116
+
+Cities: 110
+  BlindBlendAS best=17934.66456882 per_city=163.04240517
+  BaselineAS   best=18146.42493684 per_city=164.96749943
+  ElitistAS    best=18146.71260438 per_city=164.97011459
+  MaxMinAS     best=18168.78527413 per_city=165.17077522
+
+Cities: 111
+  BlindBlendAS best=17747.56742553 per_city=159.88799482
+  BaselineAS   best=18290.96182497 per_city=164.78343986
+  ElitistAS    best=18289.61121404 per_city=164.77127220
+  MaxMinAS     best=18034.32681034 per_city=162.47141271
+
+Cities: 112
+  BlindBlendAS best=18994.27826281 per_city=169.59177020
+  BaselineAS   best=19749.45329478 per_city=176.33440442
+  ElitistAS    best=19782.31384089 per_city=176.62780215
+  MaxMinAS     best=19039.34627721 per_city=169.99416319
+
+Cities: 113
+  BlindBlendAS best=18599.46702056 per_city=164.59705328
+  BaselineAS   best=19185.99905765 per_city=169.78760228
+  ElitistAS    best=18978.58998717 per_city=167.95212378
+  MaxMinAS     best=18484.17551971 per_city=163.57677451
+
+Cities: 114
+  BlindBlendAS best=18585.48199317 per_city=163.03054380
+  BaselineAS   best=19001.72249704 per_city=166.68177629
+  ElitistAS    best=18845.27338922 per_city=165.30941569
+  MaxMinAS     best=18580.23614109 per_city=162.98452755
+
+Cities: 115
+  BlindBlendAS best=19822.12370533 per_city=172.36629309
+  BaselineAS   best=20514.45994798 per_city=178.38660824
+  ElitistAS    best=20440.50696623 per_city=177.74353884
+  MaxMinAS     best=19792.46943645 per_city=172.10842988
+
+Cities: 116
+  BlindBlendAS best=20112.69806367 per_city=173.38532814
+  BaselineAS   best=20783.16689924 per_city=179.16523189
+  ElitistAS    best=20539.08609502 per_city=177.06108703
+  MaxMinAS     best=20326.02552765 per_city=175.22435800
+
+Cities: 117
+  BlindBlendAS best=18534.19381914 per_city=158.41191298
+  BaselineAS   best=19043.38991027 per_city=162.76401633
+  ElitistAS    best=18935.07610879 per_city=161.83825734
+  MaxMinAS     best=18211.42604367 per_city=155.65321405
+
+Cities: 118
+  BlindBlendAS best=20531.45494598 per_city=173.99538090
+  BaselineAS   best=21709.76481290 per_city=183.98105774
+  ElitistAS    best=21248.45257696 per_city=180.07163201
+  MaxMinAS     best=20694.10518333 per_city=175.37377274
+
+Cities: 119
+  BlindBlendAS best=20103.35576467 per_city=168.93576273
+  BaselineAS   best=20609.18550292 per_city=173.18643280
+  ElitistAS    best=20443.73544063 per_city=171.79609614
+  MaxMinAS     best=20145.31137847 per_city=169.28833091
+
+Cities: 120
+  BlindBlendAS best=19829.68142393 per_city=165.24734520
+  BaselineAS   best=20310.76864794 per_city=169.25640540
+  ElitistAS    best=20393.35792264 per_city=169.94464936
+  MaxMinAS     best=19847.30374941 per_city=165.39419791
+
+Cities: 121
+  BlindBlendAS best=21906.24388502 per_city=181.04333789
+  BaselineAS   best=22382.86916969 per_city=184.98238983
+  ElitistAS    best=22498.38092526 per_city=185.93703244
+  MaxMinAS     best=21734.20977805 per_city=179.62156841
+
+Cities: 122
+  BlindBlendAS best=21687.65035664 per_city=177.76762587
+  BaselineAS   best=22344.56738219 per_city=183.15219166
+  ElitistAS    best=22535.14165639 per_city=184.71427587
+  MaxMinAS     best=21561.22126419 per_city=176.73132184
+
+Cities: 123
+  BlindBlendAS best=21503.25578899 per_city=174.82321780
+  BaselineAS   best=22174.92744153 per_city=180.28396294
+  ElitistAS    best=22095.37517587 per_city=179.63719655
+  MaxMinAS     best=21503.25578899 per_city=174.82321780
+
+Cities: 124
+  BlindBlendAS best=21224.67367431 per_city=171.16672318
+  BaselineAS   best=22238.75089811 per_city=179.34476531
+  ElitistAS    best=21747.68264543 per_city=175.38453746
+  MaxMinAS     best=21237.01656753 per_city=171.26626264
+
+Cities: 125
+  BlindBlendAS best=21477.91796817 per_city=171.82334375
+  BaselineAS   best=22272.52113441 per_city=178.18016908
+  ElitistAS    best=22030.84351749 per_city=176.24674814
+  MaxMinAS     best=21480.24222053 per_city=171.84193776
+
+Cities: 126
+  BlindBlendAS best=21537.67958577 per_city=170.93396497
+  BaselineAS   best=22264.74314646 per_city=176.70431069
+  ElitistAS    best=22247.54771665 per_city=176.56783902
+  MaxMinAS     best=21503.95047212 per_city=170.66627359
+
+Cities: 127
+  BlindBlendAS best=21987.18308647 per_city=173.12742588
+  BaselineAS   best=22488.26523006 per_city=177.07295457
+  ElitistAS    best=22828.50931134 per_city=179.75204182
+  MaxMinAS     best=22156.91628187 per_city=174.46390773
+
+Cities: 128
+  BlindBlendAS best=21641.58828181 per_city=169.07490845
+  BaselineAS   best=22271.41103107 per_city=173.99539868
+  ElitistAS    best=21978.93097168 per_city=171.71039822
+  MaxMinAS     best=21985.85430538 per_city=171.76448676
+
+Cities: 129
+  BlindBlendAS best=22561.65454497 per_city=174.89654686
+  BaselineAS   best=22992.31506076 per_city=178.23500047
+  ElitistAS    best=23281.85098990 per_city=180.47946504
+  MaxMinAS     best=22502.17102934 per_city=174.43543434
+
+Cities: 130
+  BlindBlendAS best=22485.94431892 per_city=172.96880245
+  BaselineAS   best=23461.32888517 per_city=180.47176066
+  ElitistAS    best=23282.45319038 per_city=179.09579377
+  MaxMinAS     best=22868.97559499 per_city=175.91519688
+
+Cities: 131
+  BlindBlendAS best=23543.56039023 per_city=179.72183504
+  BaselineAS   best=24519.61852849 per_city=187.17266052
+  ElitistAS    best=24893.67897971 per_city=190.02808381
+  MaxMinAS     best=23512.27550388 per_city=179.48301911
+
+Cities: 132
+  BlindBlendAS best=22717.24402966 per_city=172.10033356
+  BaselineAS   best=23025.69109054 per_city=174.43705372
+  ElitistAS    best=23044.44315744 per_city=174.57911483
+  MaxMinAS     best=22995.29447975 per_city=174.20677636
+
+Cities: 133
+  BlindBlendAS best=24166.53142527 per_city=181.70324380
+  BaselineAS   best=24948.30983847 per_city=187.58127698
+  ElitistAS    best=25008.64117874 per_city=188.03489608
+  MaxMinAS     best=24027.76300111 per_city=180.65987219
+
+Cities: 134
+  BlindBlendAS best=23593.75269070 per_city=176.07278127
+  BaselineAS   best=24364.96547053 per_city=181.82810053
+  ElitistAS    best=24448.82134346 per_city=182.45389062
+  MaxMinAS     best=23577.84517842 per_city=175.95406850
+
+Cities: 135
+  BlindBlendAS best=24158.33884574 per_city=178.95065812
+  BaselineAS   best=24697.93455636 per_city=182.94766338
+  ElitistAS    best=24802.44422643 per_city=183.72180908
+  MaxMinAS     best=23923.06637917 per_city=177.20789910
+
+Cities: 136
+  BlindBlendAS best=24538.80753293 per_city=180.43240833
+  BaselineAS   best=25465.25736009 per_city=187.24453941
+  ElitistAS    best=25511.21289806 per_city=187.58244778
+  MaxMinAS     best=24351.93799584 per_city=179.05836762
+
+Cities: 137
+  BlindBlendAS best=24494.15200026 per_city=178.78943066
+  BaselineAS   best=25540.26863678 per_city=186.42531852
+  ElitistAS    best=25012.28754002 per_city=182.57144190
+  MaxMinAS     best=24404.13621955 per_city=178.13238116
+
+Cities: 138
+  BlindBlendAS best=24687.61740270 per_city=178.89577828
+  BaselineAS   best=25557.06116881 per_city=185.19609543
+  ElitistAS    best=25487.33473162 per_city=184.69083139
+  MaxMinAS     best=24480.02917669 per_city=177.39151577
+
+Cities: 139
+  BlindBlendAS best=24908.65331098 per_city=179.19894468
+  BaselineAS   best=26069.71159686 per_city=187.55188199
+  ElitistAS    best=26443.47956544 per_city=190.24086018
+  MaxMinAS     best=25309.12274991 per_city=182.08001978
+
+Cities: 140
+  BlindBlendAS best=25677.30700249 per_city=183.40933573
+  BaselineAS   best=26265.17641384 per_city=187.60840296
+  ElitistAS    best=26173.53258600 per_city=186.95380419
+  MaxMinAS     best=25382.45004595 per_city=181.30321461
+
+Cities: 141
+  BlindBlendAS best=24569.79879833 per_city=174.25389219
+  BaselineAS   best=25761.04311027 per_city=182.70243341
+  ElitistAS    best=25210.89445365 per_city=178.80066988
+  MaxMinAS     best=24759.91583113 per_city=175.60223994
+
+Cities: 142
+  BlindBlendAS best=26491.98201773 per_city=186.56325365
+  BaselineAS   best=27887.98985318 per_city=196.39429474
+  ElitistAS    best=28143.78408704 per_city=198.19566258
+  MaxMinAS     best=26753.69772291 per_city=188.40632199
+
+Cities: 143
+  BlindBlendAS best=25140.40062746 per_city=175.80699739
+  BaselineAS   best=26057.57361327 per_city=182.22079450
+  ElitistAS    best=25882.70022791 per_city=180.99790369
+  MaxMinAS     best=25481.85216927 per_city=178.19477041
+
+Cities: 144
+  BlindBlendAS best=27018.78114821 per_city=187.63042464
+  BaselineAS   best=28392.04545551 per_city=197.16698233
+  ElitistAS    best=28202.02184613 per_city=195.84737393
+  MaxMinAS     best=27412.24244773 per_city=190.36279478
+
+Cities: 145
+  BlindBlendAS best=27034.48153733 per_city=186.44470026
+  BaselineAS   best=28063.44535508 per_city=193.54100245
+  ElitistAS    best=28142.26933630 per_city=194.08461611
+  MaxMinAS     best=26899.45043361 per_city=185.51345127
+
+Cities: 146
+  BlindBlendAS best=27891.92191048 per_city=191.04056103
+  BaselineAS   best=29431.23641199 per_city=201.58381104
+  ElitistAS    best=28914.93649002 per_city=198.04751021
+  MaxMinAS     best=28352.17445374 per_city=194.19297571
+
+Cities: 147
+  BlindBlendAS best=27866.01241928 per_city=189.56471034
+  BaselineAS   best=29072.39358395 per_city=197.77138492
+  ElitistAS    best=29121.52713569 per_city=198.10562677
+  MaxMinAS     best=27936.30104446 per_city=190.04286425
+
+Cities: 148
+  BlindBlendAS best=27525.29493513 per_city=185.98172253
+  BaselineAS   best=28650.02332533 per_city=193.58123868
+  ElitistAS    best=28895.28178937 per_city=195.23839047
+  MaxMinAS     best=27975.34017474 per_city=189.02256875
+
+Cities: 149
+  BlindBlendAS best=28297.59140721 per_city=189.91672085
+  BaselineAS   best=29370.85641004 per_city=197.11984168
+  ElitistAS    best=28832.07764833 per_city=193.50387683
+  MaxMinAS     best=27915.40736828 per_city=187.35172730
+
+Cities: 150
+  BlindBlendAS best=27113.98226542 per_city=180.75988177
+  BaselineAS   best=28173.76723934 per_city=187.82511493
+  ElitistAS    best=28178.97177480 per_city=187.85981183
+  MaxMinAS     best=27048.41813915 per_city=180.32278759
+
+Cities: 151
+  BlindBlendAS best=28996.88718723 per_city=192.03236548
+  BaselineAS   best=30498.05754208 per_city=201.97389101
+  ElitistAS    best=30555.98506847 per_city=202.35751701
+  MaxMinAS     best=28800.99791014 per_city=190.73508550
+
+Cities: 152
+  BlindBlendAS best=27772.73155851 per_city=182.71533920
+  BaselineAS   best=29208.59936335 per_city=192.16183792
+  ElitistAS    best=29200.45125257 per_city=192.10823192
+  MaxMinAS     best=27712.02359139 per_city=182.31594468
+
+Cities: 153
+  BlindBlendAS best=28525.99587896 per_city=186.44441751
+  BaselineAS   best=29670.11005032 per_city=193.92228791
+  ElitistAS    best=29683.49661433 per_city=194.00978179
+  MaxMinAS     best=28390.77472263 per_city=185.56061910
+
+Cities: 154
+  BlindBlendAS best=29722.86429801 per_city=193.00561232
+  BaselineAS   best=31035.79417993 per_city=201.53113104
+  ElitistAS    best=31005.99692397 per_city=201.33764236
+  MaxMinAS     best=29846.98345586 per_city=193.81158088
+
+Cities: 155
+  BlindBlendAS best=29889.91784441 per_city=192.83817964
+  BaselineAS   best=30921.48966003 per_city=199.49348168
+  ElitistAS    best=30997.62468464 per_city=199.98467538
+  MaxMinAS     best=29863.46222663 per_city=192.66749824
+
+Cities: 156
+  BlindBlendAS best=29933.28109448 per_city=191.88000702
+  BaselineAS   best=30494.42010785 per_city=195.47705197
+  ElitistAS    best=30772.64200416 per_city=197.26052567
+  MaxMinAS     best=29930.29690511 per_city=191.86087760
+
+Cities: 157
+  BlindBlendAS best=31369.03300899 per_city=199.80275802
+  BaselineAS   best=32801.14777917 per_city=208.92450815
+  ElitistAS    best=32866.17701736 per_city=209.33870712
+  MaxMinAS     best=31094.38847757 per_city=198.05342979
+
+Cities: 158
+  BlindBlendAS best=30635.62716227 per_city=193.89637444
+  BaselineAS   best=32021.10427660 per_city=202.66521694
+  ElitistAS    best=31894.13872470 per_city=201.86163750
+  MaxMinAS     best=30515.51379243 per_city=193.13616324
+
+Cities: 159
+  BlindBlendAS best=30954.31115845 per_city=194.68120225
+  BaselineAS   best=33232.39664990 per_city=209.00878396
+  ElitistAS    best=32888.03195122 per_city=206.84296825
+  MaxMinAS     best=31112.52837380 per_city=195.67627908
+
+Cities: 160
+  BlindBlendAS best=30771.36191784 per_city=192.32101199
+  BaselineAS   best=31818.03070744 per_city=198.86269192
+  ElitistAS    best=31517.52546990 per_city=196.98453419
+  MaxMinAS     best=30582.65479961 per_city=191.14159250
+
+Cities: 161
+  BlindBlendAS best=30945.94167315 per_city=192.21081785
+  BaselineAS   best=32214.40204554 per_city=200.08945370
+  ElitistAS    best=32066.72929859 per_city=199.17223167
+  MaxMinAS     best=30632.03336360 per_city=190.26107679
+
+Cities: 162
+  BlindBlendAS best=31384.04083590 per_city=193.72864714
+  BaselineAS   best=32898.68478097 per_city=203.07830112
+  ElitistAS    best=32838.90295305 per_city=202.70927749
+  MaxMinAS     best=31213.66912314 per_city=192.67696990
+
+Cities: 163
+  BlindBlendAS best=33246.95987110 per_city=203.96907896
+  BaselineAS   best=34615.59180573 per_city=212.36559390
+  ElitistAS    best=34661.74837343 per_city=212.64876303
+  MaxMinAS     best=33410.88607820 per_city=204.97476122
+
+Cities: 164
+  BlindBlendAS best=34061.51452508 per_city=207.69216174
+  BaselineAS   best=34952.36936951 per_city=213.12420347
+  ElitistAS    best=35170.94903155 per_city=214.45700629
+  MaxMinAS     best=33722.25900252 per_city=205.62353050
+
+Cities: 165
+  BlindBlendAS best=32734.34535919 per_city=198.38997187
+  BaselineAS   best=34097.15061366 per_city=206.64939766
+  ElitistAS    best=34093.80303106 per_city=206.62910928
+  MaxMinAS     best=32358.09698560 per_city=196.10967870
+
+Cities: 166
+  BlindBlendAS best=33563.91895557 per_city=202.19228286
+  BaselineAS   best=35354.33181129 per_city=212.97790248
+  ElitistAS    best=35662.02524936 per_city=214.83147741
+  MaxMinAS     best=33393.24360845 per_city=201.16411812
+
+Cities: 167
+  BlindBlendAS best=33619.49032734 per_city=201.31431334
+  BaselineAS   best=35600.30787892 per_city=213.17549628
+  ElitistAS    best=35276.67161781 per_city=211.23755460
+  MaxMinAS     best=33131.04229625 per_city=198.38947483
+
+Cities: 168
+  BlindBlendAS best=33169.33684747 per_city=197.43652885
+  BaselineAS   best=34064.75948851 per_city=202.76642553
+  ElitistAS    best=34121.84707163 per_city=203.10623257
+  MaxMinAS     best=33152.95150313 per_city=197.33899704
+
+Cities: 169
+  BlindBlendAS best=33104.07859028 per_city=195.88212184
+  BaselineAS   best=34809.99297597 per_city=205.97628980
+  ElitistAS    best=34316.94893453 per_city=203.05886944
+  MaxMinAS     best=33859.18047976 per_city=200.35018035
+
+Cities: 170
+  BlindBlendAS best=34559.12810657 per_city=203.28898886
+  BaselineAS   best=36235.92905699 per_city=213.15252386
+  ElitistAS    best=36449.01990181 per_city=214.40599942
+  MaxMinAS     best=34321.21018613 per_city=201.88947168
+
+Cities: 171
+  BlindBlendAS best=35216.19123484 per_city=205.94263880
+  BaselineAS   best=37154.91587066 per_city=217.28020977
+  ElitistAS    best=37101.12698241 per_city=216.96565487
+  MaxMinAS     best=35044.95472299 per_city=204.94125569
+
+Cities: 172
+  BlindBlendAS best=36352.29911636 per_city=211.35057626
+  BaselineAS   best=37210.40670965 per_city=216.33957389
+  ElitistAS    best=37324.98196088 per_city=217.00570907
+  MaxMinAS     best=36376.52119562 per_city=211.49140230
+
+Cities: 173
+  BlindBlendAS best=36689.20643351 per_city=212.07633777
+  BaselineAS   best=38810.76771977 per_city=224.33969780
+  ElitistAS    best=38604.49457452 per_city=223.14736748
+  MaxMinAS     best=36700.94115946 per_city=212.14416855
+
+Cities: 174
+  BlindBlendAS best=35082.67822971 per_city=201.62458753
+  BaselineAS   best=36914.13343061 per_city=212.15019213
+  ElitistAS    best=35963.96502373 per_city=206.68945416
+  MaxMinAS     best=35356.98032056 per_city=203.20103633
+
+Cities: 175
+  BlindBlendAS best=35126.70366288 per_city=200.72402093
+  BaselineAS   best=37003.44675163 per_city=211.44826715
+  ElitistAS    best=37093.55582645 per_city=211.96317615
+  MaxMinAS     best=35151.67705125 per_city=200.86672601
+
+Cities: 176
+  BlindBlendAS best=36428.25809130 per_city=206.97873916
+  BaselineAS   best=37609.62644376 per_city=213.69105934
+  ElitistAS    best=36862.43540754 per_city=209.44565572
+  MaxMinAS     best=35801.38919497 per_city=203.41698406
+
+Cities: 177
+  BlindBlendAS best=38124.01090568 per_city=215.38989212
+  BaselineAS   best=40102.63853613 per_city=226.56857930
+  ElitistAS    best=39964.85243256 per_city=225.79012674
+  MaxMinAS     best=37745.48690826 per_city=213.25133846
+
+Cities: 178
+  BlindBlendAS best=36004.05393511 per_city=202.26996593
+  BaselineAS   best=38785.85628290 per_city=217.89806901
+  ElitistAS    best=38050.84090826 per_city=213.76876915
+  MaxMinAS     best=36100.66020090 per_city=202.81269776
+
+Cities: 179
+  BlindBlendAS best=37333.01955336 per_city=208.56435505
+  BaselineAS   best=39293.38934742 per_city=219.51614161
+  ElitistAS    best=38786.67548228 per_city=216.68533789
+  MaxMinAS     best=37400.93819575 per_city=208.94378880
+
+Cities: 180
+  BlindBlendAS best=35867.85639996 per_city=199.26586889
+  BaselineAS   best=38395.56570681 per_city=213.30869837
+  ElitistAS    best=38081.02964460 per_city=211.56127580
+  MaxMinAS     best=36317.47399177 per_city=201.76374440
+
+Cities: 181
+  BlindBlendAS best=36819.72981668 per_city=203.42392164
+  BaselineAS   best=37990.12060237 per_city=209.89016907
+  ElitistAS    best=38554.17341377 per_city=213.00648295
+  MaxMinAS     best=36994.71514376 per_city=204.39069140
+
+Cities: 182
+  BlindBlendAS best=38002.76422971 per_city=208.80639687
+  BaselineAS   best=40260.69066858 per_city=221.21258609
+  ElitistAS    best=39496.95772373 per_city=217.01625123
+  MaxMinAS     best=38147.69993722 per_city=209.60274691
+
+Cities: 183
+  BlindBlendAS best=38256.55043760 per_city=209.05218818
+  BaselineAS   best=39738.12563856 per_city=217.14822753
+  ElitistAS    best=39709.76957490 per_city=216.99327637
+  MaxMinAS     best=38312.40760433 per_city=209.35741860
+
+Cities: 184
+  BlindBlendAS best=38554.38548762 per_city=209.53470374
+  BaselineAS   best=40229.18225995 per_city=218.63686011
+  ElitistAS    best=40750.86128457 per_city=221.47207220
+  MaxMinAS     best=38835.50287987 per_city=211.06251565
+
+Cities: 185
+  BlindBlendAS best=39257.33778000 per_city=212.20182584
+  BaselineAS   best=41521.68773613 per_city=224.44155533
+  ElitistAS    best=41096.13910829 per_city=222.14129248
+  MaxMinAS     best=39307.71998722 per_city=212.47416209
+
+Cities: 186
+  BlindBlendAS best=38212.03355416 per_city=205.44104061
+  BaselineAS   best=40473.32328607 per_city=217.59851229
+  ElitistAS    best=40221.37526964 per_city=216.24395306
+  MaxMinAS     best=38475.50499849 per_city=206.85755376
+
+Cities: 187
+  BlindBlendAS best=39501.71839335 per_city=211.23913579
+  BaselineAS   best=41248.12213586 per_city=220.57819324
+  ElitistAS    best=41049.28858474 per_city=219.51491222
+  MaxMinAS     best=39447.43356640 per_city=210.94884260
+
+Cities: 188
+  BlindBlendAS best=40506.66117025 per_city=215.46096367
+  BaselineAS   best=42342.30226157 per_city=225.22501203
+  ElitistAS    best=42528.25277777 per_city=226.21411052
+  MaxMinAS     best=40738.55668535 per_city=216.69445045
+
+Cities: 189
+  BlindBlendAS best=40428.69218665 per_city=213.90842427
+  BaselineAS   best=43581.18725574 per_city=230.58829236
+  ElitistAS    best=43096.93647941 per_city=228.02611894
+  MaxMinAS     best=40918.47216204 per_city=216.49985271
+
+Cities: 190
+  BlindBlendAS best=41427.58913574 per_city=218.03994282
+  BaselineAS   best=43377.06155843 per_city=228.30032399
+  ElitistAS    best=42794.10491064 per_city=225.23213111
+  MaxMinAS     best=40976.29660408 per_city=215.66471897
+
+Cities: 191
+  BlindBlendAS best=41881.00991702 per_city=219.27230323
+  BaselineAS   best=43661.96057643 per_city=228.59665223
+  ElitistAS    best=43982.85584263 per_city=230.27673216
+  MaxMinAS     best=41607.65546690 per_city=217.84112810
+
+Cities: 192
+  BlindBlendAS best=40756.99943876 per_city=212.27603874
+  BaselineAS   best=42326.68531787 per_city=220.45148603
+  ElitistAS    best=42880.04058768 per_city=223.33354473
+  MaxMinAS     best=40564.84012669 per_city=211.27520899
+
+Cities: 193
+  BlindBlendAS best=41442.19434452 per_city=214.72639557
+  BaselineAS   best=43618.07911622 per_city=226.00040993
+  ElitistAS    best=43625.89380979 per_city=226.04090057
+  MaxMinAS     best=40500.34249403 per_city=209.84633417
+
+Cities: 194
+  BlindBlendAS best=42025.26654154 per_city=216.62508527
+  BaselineAS   best=43212.21405590 per_city=222.74337142
+  ElitistAS    best=44140.52653665 per_city=227.52848730
+  MaxMinAS     best=41625.06495006 per_city=214.56219046
+
+Cities: 195
+  BlindBlendAS best=40717.39595200 per_city=208.80715873
+  BaselineAS   best=43097.60177791 per_city=221.01334245
+  ElitistAS    best=42493.10652814 per_city=217.91336681
+  MaxMinAS     best=41498.87636235 per_city=212.81475058
+
+Cities: 196
+  BlindBlendAS best=41936.39260078 per_city=213.96118674
+  BaselineAS   best=44505.73864463 per_city=227.07009513
+  ElitistAS    best=44653.80250224 per_city=227.82552297
+  MaxMinAS     best=41874.20224932 per_city=213.64388903
+
+Cities: 197
+  BlindBlendAS best=41397.54541409 per_city=210.13982444
+  BaselineAS   best=43750.83007803 per_city=222.08543187
+  ElitistAS    best=42972.80200064 per_city=218.13605076
+  MaxMinAS     best=41088.30377054 per_city=208.57006990
+
+Cities: 198
+  BlindBlendAS best=41297.10997479 per_city=208.57126250
+  BaselineAS   best=43228.35260222 per_city=218.32501314
+  ElitistAS    best=43281.94319997 per_city=218.59567273
+  MaxMinAS     best=40827.31272126 per_city=206.19854910
+
+Cities: 199
+  BlindBlendAS best=43555.89194408 per_city=218.87382886
+  BaselineAS   best=46402.50532890 per_city=233.17841874
+  ElitistAS    best=46268.46805616 per_city=232.50486460
+  MaxMinAS     best=43558.86553839 per_city=218.88877155
+
+Cities: 200
+  BlindBlendAS best=42838.74332728 per_city=214.19371664
+  BaselineAS   best=45047.67416945 per_city=225.23837085
+  ElitistAS    best=44294.82496209 per_city=221.47412481
+  MaxMinAS     best=43337.71374886 per_city=216.68856874
+
+Average results
+---------------
+BlindBlendAS avg_best=28784.48099162 avg_per_city=188.40706394 best=15251.54950366 worst=43555.89194408
+BaselineAS   avg_best=30023.42238320 avg_per_city=196.21034538 best=15737.56234117 worst=46402.50532890
+ElitistAS    avg_best=29932.69600933 avg_per_city=195.61440422 best=15509.39943595 worst=46268.46805616
+MaxMinAS     avg_best=28785.76958373 avg_per_city=188.45819923 best=15326.92671112 worst=43558.86553839
