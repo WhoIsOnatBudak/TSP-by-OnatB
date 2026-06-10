@@ -199,11 +199,11 @@ def draw_axes(parts, left, top, width, height, x_min, x_max, y_min, y_max):
         value = y_min + ratio * (y_max - y_min)
         parts.append(
             f'<line x1="{left}" y1="{y:.2f}" x2="{left + width}" '
-            f'y2="{y:.2f}" stroke="#e5e7eb" stroke-width="1"/>'
+            f'y2="{y:.2f}" stroke="#e5e7eb" stroke-width="1.4"/>'
         )
         parts.append(
-            f'<text x="{left - 10}" y="{y + 4:.2f}" font-family="Arial" '
-            f'font-size="10" fill="#4b5563" text-anchor="end">'
+            f'<text x="{left - 16}" y="{y + 8:.2f}" font-family="Arial" '
+            f'font-size="22" fill="#4b5563" text-anchor="end">'
             f'{nice_number(value)}</text>'
         )
 
@@ -222,29 +222,29 @@ def draw_axes(parts, left, top, width, height, x_min, x_max, y_min, y_max):
         )
         parts.append(
             f'<line x1="{x:.2f}" y1="{top}" x2="{x:.2f}" '
-            f'y2="{top + height}" stroke="#f3f4f6" stroke-width="1"/>'
+            f'y2="{top + height}" stroke="#f3f4f6" stroke-width="1.2"/>'
         )
         parts.append(
-            f'<text x="{x:.2f}" y="{top + height + 18}" '
-            f'font-family="Arial" font-size="10" fill="#4b5563" '
+            f'<text x="{x:.2f}" y="{top + height + 38}" '
+            f'font-family="Arial" font-size="22" fill="#4b5563" '
             f'text-anchor="middle">{tick}</text>'
         )
 
     parts.append(
         f'<line x1="{left}" y1="{top + height}" x2="{left + width}" '
-        f'y2="{top + height}" stroke="#9ca3af"/>'
+        f'y2="{top + height}" stroke="#9ca3af" stroke-width="1.5"/>'
     )
     parts.append(
         f'<line x1="{left}" y1="{top}" x2="{left}" '
-        f'y2="{top + height}" stroke="#9ca3af"/>'
+        f'y2="{top + height}" stroke="#9ca3af" stroke-width="1.5"/>'
     )
 
 
 def build_detail_panel(rows, title, top, panel_height, chart_width):
-    left = 88
-    plot_top = top + 36
+    left = 132
+    plot_top = top + 82
     width = chart_width - left - 28
-    height = panel_height - 68
+    height = panel_height - 162
     grouped = detail_points_by_algorithm(rows)
     averages = detail_averages(rows)
     all_x = [row["run_index"] for row in rows]
@@ -255,8 +255,8 @@ def build_detail_panel(rows, title, top, panel_height, chart_width):
     parts = []
 
     parts.append(
-        f'<text x="{left}" y="{top + 22}" font-family="Arial" '
-        f'font-size="17" font-weight="700" fill="#111827">'
+        f'<text x="{left}" y="{top + 42}" font-family="Arial" '
+        f'font-size="34" font-weight="700" fill="#111827">'
         f'{html.escape(title)}</text>'
     )
     draw_axes(parts, left, plot_top, width, height, x_min, x_max, y_min, y_max)
@@ -279,7 +279,7 @@ def build_detail_panel(rows, title, top, panel_height, chart_width):
         parts.append(
             f'<line x1="{left}" y1="{average_y:.2f}" '
             f'x2="{left + width}" y2="{average_y:.2f}" stroke="{color}" '
-            f'stroke-width="1.2" stroke-dasharray="5 5" opacity="0.42"/>'
+            f'stroke-width="2.2" stroke-dasharray="8 8" opacity="0.42"/>'
         )
 
         polyline_points = []
@@ -300,7 +300,7 @@ def build_detail_panel(rows, title, top, panel_height, chart_width):
             polyline_points.append(f"{x:.2f},{y:.2f}")
 
         parts.append(
-            f'<polyline fill="none" stroke="{color}" stroke-width="1.8" '
+            f'<polyline fill="none" stroke="{color}" stroke-width="3.5" '
             f'opacity="0.86" points="{" ".join(polyline_points)}"/>'
         )
 
@@ -318,7 +318,7 @@ def build_detail_panel(rows, title, top, panel_height, chart_width):
                 height,
             )
             parts.append(
-                f'<circle cx="{x:.2f}" cy="{y:.2f}" r="1.8" '
+                f'<circle cx="{x:.2f}" cy="{y:.2f}" r="3.2" '
                 f'fill="{color}" opacity="0.86"/>'
             )
 
@@ -326,10 +326,10 @@ def build_detail_panel(rows, title, top, panel_height, chart_width):
 
 
 def build_iteration_panel(iteration_rows, title, top, panel_height, chart_width):
-    left = 88
-    plot_top = top + 36
+    left = 132
+    plot_top = top + 82
     width = chart_width - left - 28
-    height = panel_height - 68
+    height = panel_height - 162
     averages, _ = average_iterations(iteration_rows)
     all_x = [
         iteration
@@ -347,8 +347,8 @@ def build_iteration_panel(iteration_rows, title, top, panel_height, chart_width)
     parts = []
 
     parts.append(
-        f'<text x="{left}" y="{top + 22}" font-family="Arial" '
-        f'font-size="17" font-weight="700" fill="#111827">'
+        f'<text x="{left}" y="{top + 42}" font-family="Arial" '
+        f'font-size="34" font-weight="700" fill="#111827">'
         f'{html.escape(title)}</text>'
     )
     draw_axes(parts, left, plot_top, width, height, x_min, x_max, y_min, y_max)
@@ -373,7 +373,7 @@ def build_iteration_panel(iteration_rows, title, top, panel_height, chart_width)
             polyline_points.append(f"{x:.2f},{y:.2f}")
 
         parts.append(
-            f'<polyline fill="none" stroke="{color}" stroke-width="2.3" '
+            f'<polyline fill="none" stroke="{color}" stroke-width="4.2" '
             f'stroke-linejoin="round" stroke-linecap="round" opacity="0.92" '
             f'points="{" ".join(polyline_points)}"/>'
         )
@@ -381,81 +381,55 @@ def build_iteration_panel(iteration_rows, title, top, panel_height, chart_width)
     return "\n".join(parts)
 
 
-def build_legend(wc_detail, nc_detail, x, y):
-    wc_averages = detail_averages(wc_detail)
-    nc_averages = detail_averages(nc_detail)
-    algorithms = sorted(set(wc_averages) | set(nc_averages))
+def build_mode_legend(detail_rows, x, y, width):
+    averages = detail_averages(detail_rows)
+    algorithms = sorted(averages)
+    legend_columns = 2
+    column_width = width / legend_columns
+    row_height = 92
     parts = []
 
     parts.append(
-        f'<text x="{x}" y="{y}" font-family="Arial" font-size="13" '
-        f'font-weight="700" fill="#111827">Algorithm colors</text>'
+        f'<text x="{x}" y="{y}" font-family="Arial" font-size="30" '
+        f'font-weight="700" fill="#111827">Algorithm final averages</text>'
     )
 
     for index, algorithm in enumerate(algorithms):
-        row_y = y + 26 + index * 24
+        item_x = x + (index % legend_columns) * column_width
+        row_y = y + 58 + (index // legend_columns) * row_height
         color = COLORS.get(algorithm, "#111827")
+        average_text = nice_number(averages[algorithm])
         parts.append(
-            f'<line x1="{x}" y1="{row_y}" x2="{x + 30}" y2="{row_y}" '
-            f'stroke="{color}" stroke-width="3"/>'
+            f'<line x1="{item_x}" y1="{row_y}" x2="{item_x + 44}" y2="{row_y}" '
+            f'stroke="{color}" stroke-width="6"/>'
         )
         parts.append(
-            f'<text x="{x + 40}" y="{row_y + 4}" font-family="Arial" '
-            f'font-size="12" fill="#111827">{html.escape(algorithm)}</text>'
+            f'<text x="{item_x + 58}" y="{row_y + 7}" font-family="Arial" '
+            f'font-size="22" fill="#111827">{html.escape(algorithm)}</text>'
         )
-
-    average_y = y + 26 + len(algorithms) * 24 + 28
-    parts.append(
-        f'<text x="{x}" y="{average_y}" font-family="Arial" font-size="13" '
-        f'font-weight="700" fill="#111827">Final averages</text>'
-    )
-
-    for section_index, (label, averages) in enumerate([
-        ("With Cross Check", wc_averages),
-        ("Without Cross Check", nc_averages),
-    ]):
-        section_y = average_y + 22 + section_index * 88
         parts.append(
-            f'<text x="{x}" y="{section_y}" font-family="Arial" '
-            f'font-size="12" font-weight="700" fill="#374151">'
-            f'{html.escape(label)}</text>'
+            f'<text x="{item_x + 58}" y="{row_y + 42}" font-family="Arial" '
+            f'font-size="22" fill="#374151">Average: {average_text}</text>'
         )
-
-        for alg_index, algorithm in enumerate(algorithms):
-            item_y = section_y + 18 + alg_index * 15
-            color = COLORS.get(algorithm, "#111827")
-            value = averages.get(algorithm)
-            value_text = nice_number(value) if value is not None else "-"
-            parts.append(
-                f'<circle cx="{x + 5}" cy="{item_y - 4}" r="4" '
-                f'fill="{color}"/>'
-            )
-            parts.append(
-                f'<text x="{x + 16}" y="{item_y}" font-family="Arial" '
-                f'font-size="11" fill="#4b5563">'
-                f'{html.escape(algorithm)}: {value_text}</text>'
-            )
 
     return "\n".join(parts)
 
 
-def build_svg(size, wc_detail, wc_iterations, nc_detail, nc_iterations):
+def build_mode_svg(size, mode_title, detail_rows, iteration_rows):
     width = 1280
-    panel_height = 275
-    top_start = 100
-    panel_gap = 28
-    chart_width = 930
-    legend_x = 990
-    legend_y = 116
-    height = top_start + 4 * panel_height + 3 * panel_gap + 54
-    total_maps = len({row["source_index"] for row in wc_detail})
+    panel_height = 430
+    top_start = 118
+    panel_gap = 72
+    chart_width = width - 48
+    legend_x = 132
+    legend_width = width - legend_x - 84
+    legend_y = top_start + 2 * panel_height + panel_gap + 58
+    height = legend_y + 220
     parts = []
 
     panel_tops = [
         top_start,
         top_start + panel_height + panel_gap,
-        top_start + 2 * (panel_height + panel_gap),
-        top_start + 3 * (panel_height + panel_gap),
     ]
 
     parts.append(
@@ -464,20 +438,14 @@ def build_svg(size, wc_detail, wc_iterations, nc_detail, nc_iterations):
     )
     parts.append('<rect width="100%" height="100%" fill="#ffffff"/>')
     parts.append(
-        f'<text x="48" y="52" font-family="Arial" font-size="25" '
-        f'font-weight="700" fill="#111827">{size}-City With and '
-        f'Without Cross Check Results with Iteration Averages</text>'
-    )
-    parts.append(
-        f'<text x="48" y="78" font-family="Arial" font-size="13" '
-        f'fill="#4b5563">Panel order: with cross check final, with cross '
-        f'check iteration, without cross check final, without cross check '
-        f'iteration | maps {total_maps}</text>'
+        f'<text x="48" y="74" font-family="Arial" font-size="44" '
+        f'font-weight="700" fill="#111827">{size}-City {html.escape(mode_title)} '
+        f'Results</text>'
     )
     parts.append(
         build_detail_panel(
-            wc_detail,
-            "With Cross Check final tour length by sorted run",
+            detail_rows,
+            "Final tour length by sorted run",
             panel_tops[0],
             panel_height,
             chart_width,
@@ -485,32 +453,21 @@ def build_svg(size, wc_detail, wc_iterations, nc_detail, nc_iterations):
     )
     parts.append(
         build_iteration_panel(
-            wc_iterations,
-            "With Cross Check average global best by iteration",
+            iteration_rows,
+            "Average global best by iteration",
             panel_tops[1],
             panel_height,
             chart_width,
         )
     )
     parts.append(
-        build_detail_panel(
-            nc_detail,
-            "Without Cross Check final tour length by sorted run",
-            panel_tops[2],
-            panel_height,
-            chart_width,
+        build_mode_legend(
+            detail_rows,
+            legend_x,
+            legend_y,
+            legend_width,
         )
     )
-    parts.append(
-        build_iteration_panel(
-            nc_iterations,
-            "Without Cross Check average global best by iteration",
-            panel_tops[3],
-            panel_height,
-            chart_width,
-        )
-    )
-    parts.append(build_legend(wc_detail, nc_detail, legend_x, legend_y))
     parts.append("</svg>")
     return "\n".join(parts)
 
@@ -547,12 +504,27 @@ def render_size(input_dir, output_dir, size):
         "Without Cross Check"
     )
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / f"wc_nc_iterations_all{size}.svg"
-    output_path.write_text(
-        build_svg(size, wc_detail, wc_iterations, nc_detail, nc_iterations),
+    wc_output_path = output_dir / f"wc_iterations_all{size}.svg"
+    nc_output_path = output_dir / f"nc_iterations_all{size}.svg"
+    wc_output_path.write_text(
+        build_mode_svg(
+            size,
+            "With Cross Check",
+            wc_detail,
+            wc_iterations,
+        ),
         encoding="utf-8",
     )
-    return output_path
+    nc_output_path.write_text(
+        build_mode_svg(
+            size,
+            "Without Cross Check",
+            nc_detail,
+            nc_iterations,
+        ),
+        encoding="utf-8",
+    )
+    return wc_output_path, nc_output_path
 
 
 def parse_sizes():
@@ -571,8 +543,10 @@ def main():
     output_dir = Path(sys.argv[3]) if len(sys.argv) > 3 else DEFAULT_OUTPUT_DIR
 
     for size in sizes:
-        output_path = render_size(input_dir, output_dir, size)
-        print(f"Wrote {output_path}")
+        output_paths = render_size(input_dir, output_dir, size)
+
+        for output_path in output_paths:
+            print(f"Wrote {output_path}")
 
 
 if __name__ == "__main__":

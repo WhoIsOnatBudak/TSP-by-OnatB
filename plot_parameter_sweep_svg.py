@@ -135,12 +135,12 @@ def average_marker_points(x, y, size=6):
 
 
 def write_parameter_svg(parameter, points, output_path):
-    width = 920
-    height = 560
-    left = 92
-    right = 44
-    top = 100
-    bottom = 92
+    width = 1280
+    height = 980
+    left = 158
+    right = 54
+    top = 136
+    bottom = 280
     chart_width = width - left - right
     chart_height = height - top - bottom
     color = PARAMETER_COLORS.get(parameter, "#111827")
@@ -160,16 +160,8 @@ def write_parameter_svg(parameter, points, output_path):
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
-        f'<text x="28" y="38" font-family="Arial" font-size="24" '
+        f'<text x="48" y="84" font-family="Arial" font-size="52" '
         f'font-weight="700" fill="#111827">{html.escape(title)}</text>',
-        f'<text x="28" y="64" font-family="Arial" font-size="13" fill="#4b5563">'
-        f'Each colored dot is one test run. Black diamonds and labels show '
-        f'the average for each tested value ({points[0]["runs"]} runs per value). '
-        f'Lower is better.</text>',
-        f'<text x="28" y="84" font-family="Arial" font-size="13" fill="#111827">'
-        f'Best value: {html.escape(nice_value(best_point["value"]))} = '
-        f'{nice_number(best_point["average_best_distance"])} | '
-        f'Overall average: {nice_number(overall_average)}</text>',
     ]
 
     for index in range(6):
@@ -178,11 +170,11 @@ def write_parameter_svg(parameter, points, output_path):
         value = y_min + ratio * (y_max - y_min)
         parts.append(
             f'<line x1="{left}" y1="{y:.2f}" x2="{left + chart_width}" '
-            f'y2="{y:.2f}" stroke="#e5e7eb" stroke-width="1"/>'
+            f'y2="{y:.2f}" stroke="#e5e7eb" stroke-width="1.4"/>'
         )
         parts.append(
-            f'<text x="{left - 12}" y="{y + 4:.2f}" font-family="Arial" '
-            f'font-size="11" fill="#4b5563" text-anchor="end">'
+            f'<text x="{left - 18}" y="{y + 10:.2f}" font-family="Arial" '
+            f'font-size="28" fill="#4b5563" text-anchor="end">'
             f'{nice_number(value)}</text>'
         )
 
@@ -201,22 +193,22 @@ def write_parameter_svg(parameter, points, output_path):
         )
         parts.append(
             f'<line x1="{x:.2f}" y1="{top}" x2="{x:.2f}" '
-            f'y2="{top + chart_height}" stroke="#f3f4f6" stroke-width="1"/>'
+            f'y2="{top + chart_height}" stroke="#f3f4f6" stroke-width="1.2"/>'
         )
         parts.append(
-            f'<text x="{x:.2f}" y="{top + chart_height + 26}" '
-            f'font-family="Arial" font-size="12" fill="#374151" '
+            f'<text x="{x:.2f}" y="{top + chart_height + 44}" '
+            f'font-family="Arial" font-size="28" fill="#374151" '
             f'text-anchor="middle">{html.escape(nice_value(point["value"]))}</text>'
         )
 
     parts.append(
         f'<line x1="{left}" y1="{top + chart_height}" '
         f'x2="{left + chart_width}" y2="{top + chart_height}" '
-        f'stroke="#9ca3af"/>'
+        f'stroke="#9ca3af" stroke-width="1.5"/>'
     )
     parts.append(
         f'<line x1="{left}" y1="{top}" x2="{left}" '
-        f'y2="{top + chart_height}" stroke="#9ca3af"/>'
+        f'y2="{top + chart_height}" stroke="#9ca3af" stroke-width="1.5"/>'
     )
 
     average_line_points = []
@@ -237,8 +229,8 @@ def write_parameter_svg(parameter, points, output_path):
         average_line_points.append(f"{x:.2f},{y:.2f}")
 
     parts.append(
-        f'<polyline fill="none" stroke="#111827" stroke-width="1.4" '
-        f'opacity="0.55" stroke-dasharray="5 5" '
+        f'<polyline fill="none" stroke="#111827" stroke-width="2.5" '
+        f'opacity="0.60" stroke-dasharray="8 8" '
         f'points="{" ".join(average_line_points)}"/>'
     )
 
@@ -255,7 +247,7 @@ def write_parameter_svg(parameter, points, output_path):
             chart_width,
             chart_height,
         )
-        spread = 34.0
+        spread = 58.0
         run_rows = point["run_rows"]
 
         for index, run in enumerate(run_rows):
@@ -277,38 +269,55 @@ def write_parameter_svg(parameter, points, output_path):
                 chart_height,
             )
             parts.append(
-                f'<circle cx="{x + jitter:.2f}" cy="{y:.2f}" r="3.2" '
+                f'<circle cx="{x + jitter:.2f}" cy="{y:.2f}" r="5.8" '
                 f'fill="{color}" opacity="0.68"/>'
             )
 
         parts.append(
-            f'<line x1="{x - 18:.2f}" y1="{average_y:.2f}" '
-            f'x2="{x + 18:.2f}" y2="{average_y:.2f}" '
-            f'stroke="#111827" stroke-width="2.1"/>'
+            f'<line x1="{x - 28:.2f}" y1="{average_y:.2f}" '
+            f'x2="{x + 28:.2f}" y2="{average_y:.2f}" '
+            f'stroke="#111827" stroke-width="3.6"/>'
         )
         parts.append(
-            f'<polygon points="{average_marker_points(x, average_y)}" '
+            f'<polygon points="{average_marker_points(x, average_y, 12)}" '
             f'fill="#111827"/>'
         )
         if point is best_point:
             parts.append(
-                f'<circle cx="{x:.2f}" cy="{average_y:.2f}" r="9" '
-                f'fill="none" stroke="#111827" stroke-width="1.6"/>'
+                f'<circle cx="{x:.2f}" cy="{average_y:.2f}" r="18" '
+                f'fill="none" stroke="#111827" stroke-width="2.8"/>'
             )
 
         parts.append(
-            f'<text x="{x:.2f}" y="{average_y - 15:.2f}" font-family="Arial" '
-            f'font-size="11" fill="#111827" text-anchor="middle">'
+            f'<text x="{x:.2f}" y="{average_y - 30:.2f}" font-family="Arial" '
+            f'font-size="22" fill="#111827" text-anchor="middle">'
             f'avg {nice_number(point["average_best_distance"])}</text>'
         )
 
+    legend_y = height - 128
     parts.extend([
-        f'<text x="{left + chart_width / 2:.2f}" y="{height - 32}" '
-        f'font-family="Arial" font-size="12" fill="#4b5563" '
+        f'<circle cx="{left + 14}" cy="{legend_y}" r="10" '
+        f'fill="{color}" opacity="0.68"/>',
+        f'<text x="{left + 46}" y="{legend_y + 10}" font-family="Arial" '
+        f'font-size="30" fill="#374151">Colored dots: individual test runs '
+        f'({points[0]["runs"]} runs per value)</text>',
+        f'<line x1="{left}" y1="{legend_y + 68}" '
+        f'x2="{left + 58}" y2="{legend_y + 68}" '
+        f'stroke="#111827" stroke-width="3.8"/>',
+        f'<polygon points="{average_marker_points(left + 29, legend_y + 68, 12)}" '
+        f'fill="#111827"/>',
+        f'<text x="{left + 84}" y="{legend_y + 78}" '
+        f'font-family="Arial" font-size="30" fill="#374151">'
+        f'Black marker: average for tested value</text>',
+    ])
+
+    parts.extend([
+        f'<text x="{left + chart_width / 2:.2f}" y="{top + chart_height + 96}" '
+        f'font-family="Arial" font-size="32" fill="#4b5563" '
         f'text-anchor="middle">Tested value</text>',
-        f'<text x="20" y="{top + chart_height / 2:.2f}" '
-        f'font-family="Arial" font-size="12" fill="#4b5563" '
-        f'text-anchor="middle" transform="rotate(-90 20 '
+        f'<text x="42" y="{top + chart_height / 2:.2f}" '
+        f'font-family="Arial" font-size="32" fill="#4b5563" '
+        f'text-anchor="middle" transform="rotate(-90 42 '
         f'{top + chart_height / 2:.2f})">Best distance</text>',
         "</svg>",
     ])
@@ -342,7 +351,7 @@ def write_svgs(summaries, output_dir, selected_parameter):
 def main():
     input_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("Rapor/sweep/parameter_sweep_detail.csv")
     output_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("Rapor/ImagesCSV")
-    selected_parameter = sys.argv[3] if len(sys.argv) > 3 else "base_pheromone"
+    selected_parameter = sys.argv[3] if len(sys.argv) > 3 else "all"
     rows = read_rows(input_path)
     summaries = summarize(rows)
     output_dir.mkdir(parents=True, exist_ok=True)
